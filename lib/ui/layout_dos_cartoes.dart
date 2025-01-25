@@ -6,7 +6,7 @@ class LayoutDosCartoes extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(child: Text("Adicionar Novo")),
+      body: Center(child: Text("Layout")),
     );
   }
 }

@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'lista_de_cadastrados.dart';
+import 'layout_dos_cartoes.dart';
+import 'config.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super (key: key);
@@ -7,7 +11,51 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+
+@override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 3, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white54,
+            appBar: AppBar(
+              backgroundColor: const Color.fromARGB(137, 22, 12, 110),
+              bottom: TabBar(
+                unselectedLabelColor: Colors.black,
+                labelColor: Colors.white,
+                controller: _tabController,
+                tabs: const [
+                  Tab(icon: Icon(Icons.menu), text: 'Lista'),
+                  Tab(icon: Icon(Icons.badge), text: 'Layouts'),
+                  Tab(icon: Icon(Icons.settings), text: 'Configurações'),
+                ],
+              ),
+            ),
+            body: TabBarView(
+              controller: _tabController,
+              children: const [
+                ListaDeCadastrados(),
+                LayoutDosCartoes(),
+                Config(),
+              ],
+            ),
+    );
+  }
+
+
+  /*
   int _currentIndex = 0;
   List<Widget> body = [
     Icon(Icons.menu),
@@ -56,4 +104,5 @@ class _HomeScreenState extends State<HomeScreen> {
     ),
   );
 }
+*/
 }
