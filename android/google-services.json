@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "990962716722",
+    "project_id": "brindecard-22db0",
+    "storage_bucket": "brindecard-22db0.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:990962716722:android:b928e2a9416ead2b26ac2b",
+        "android_client_info": {
+          "package_name": "com.example.test"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyARfPX8Mn0ypXV7d7cnpUZqSeJcF6WrPZg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
