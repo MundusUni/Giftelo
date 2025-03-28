@@ -163,6 +163,10 @@ void _mostrarPopupEdicao(Map<String, dynamic> usuario) {
                 // Botão Adicionar (Aumenta o número de usos)
                 TextButton(
                   onPressed: () async {
+                    if (int.parse(_usosController.text) >= int.parse(_maxUsosController.text)) {
+                      Navigator.pop(context); // Fecha a popup de edição
+                      return; // Impede que a popup seja fechada
+                    }
                   // Atualiza o campo de usos no banco
                   await _dbHelper.updateUser({
                     'id': usuario['id'],
@@ -277,10 +281,6 @@ Widget build(BuildContext context) {
     ),
   );
 }
-
-
-
-
 
   @override
   void dispose() {
