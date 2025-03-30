@@ -3,6 +3,8 @@ import 'package:test/ui/layout_dos_cartoes/name_of_layout.dart';
 import 'layout_dos_cartoes/number_of_stamps.dart';
 import 'layout_dos_cartoes/card.dart';
 import 'layout_dos_cartoes/slide_color.dart';
+import 'layout_dos_cartoes/stamp.dart';
+import 'layout_dos_cartoes/card_and_stamps.dart';
 
 class LayoutDosCartoes extends StatefulWidget {
   const LayoutDosCartoes({super.key});
@@ -12,7 +14,7 @@ class LayoutDosCartoes extends StatefulWidget {
 }
 
 class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
-  int stampCount = 5;
+  int stampCount = 1;
   int numberOfCircles = 1;
   bool newCustomerBonus = false;
   Color stampColor = Colors.black;
@@ -33,9 +35,20 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CustomCard(cardColor: cardColor, numberOfCircles: numberOfCircles),
+            
+
+            CircleAndIconController(
+              cardColor: Colors.blue,
+              stampIcon: Icons.local_pizza,
+              stampColor: Colors.orange,
+              stampCount: stampCount,
+              numberOfCircles: numberOfCircles,
+            ),
+
             const Divider(), // Linha divisória
 
+
+            
 
 
           Expanded(
@@ -47,22 +60,8 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
                     
 
                     NameOfLayout(),
-                    const SizedBox(height: 20),
-                    const Divider(), // Linha divisória
-                    const SizedBox(height: 20),
-                    Center(
-                      child: Wrap(
-                        spacing: 8,
-                        children: List.generate(
-                          stampCount,
-                          (index) => Icon(stampIcon, color: stampColor, size: 40),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    const Divider(), // Linha divisória
-                    const SizedBox(height: 20),
-
+                    //Stamp(stampCount:stampCount, stampIcon:stampIcon, stampColor:stampColor),
+                    const SizedBox(height: 20), const Divider(), const SizedBox(height: 20),
                     SlideColor(
                       initialColor: stampColor,
                       onSlideColorChanged: (newColor) {
@@ -72,9 +71,7 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
                       },
                       slideText: 'Cor do Carimbo:',
                     ),
-
-                    const Divider(),
-
+                    const SizedBox(height: 20), const Divider(), const SizedBox(height: 20),
                     SlideColor(
                       initialColor: cardColor,
                       onSlideColorChanged: (newColor) {
@@ -93,7 +90,7 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
                       numberText: 'Número de Pizzas (Para Exemplo)',
                       stampCount: stampCount,
                       minStamps: 1,
-                      maxStamps: 10,
+                      maxStamps: 18,
                       onStampCountChanged: (newCount) {
                         setState(() {
                           stampCount = newCount; // Atualiza o valor de stampCount
@@ -107,7 +104,7 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
                       numberText: 'Número de Círculos',
                       stampCount: numberOfCircles,
                       minStamps: 1,
-                      maxStamps: 12,
+                      maxStamps: 18,
                       onStampCountChanged: (newCount) {
                         setState(() {
                           numberOfCircles = newCount; // Atualiza o valor de stampCount

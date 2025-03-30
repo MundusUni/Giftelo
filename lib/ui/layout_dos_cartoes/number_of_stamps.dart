@@ -11,7 +11,7 @@ class NumberOfStamps extends StatelessWidget {
     super.key,
     required this.stampCount,
     this.minStamps = 1,
-    this.maxStamps = 10,
+    this.maxStamps = 18,
     required this.onStampCountChanged, // Torna o callback obrigatório
     required this.numberText,
   });
