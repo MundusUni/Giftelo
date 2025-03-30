@@ -1,47 +1,30 @@
 import 'package:flutter/material.dart';
 
-class NumberOfStamps extends StatefulWidget {
-  final int initialStampCount; // Valor inicial do contador
+class NumberOfStamps extends StatelessWidget {
+  final int stampCount; // Valor do contador vindo de fora
   final int minStamps; // Número mínimo de carimbos
   final int maxStamps; // Número máximo de carimbos
   final ValueChanged<int> onStampCountChanged; // Callback para enviar o valor atualizado
+  final String numberText;
 
   const NumberOfStamps({
     super.key,
-    this.initialStampCount = 1,
+    required this.stampCount,
     this.minStamps = 1,
     this.maxStamps = 10,
     required this.onStampCountChanged, // Torna o callback obrigatório
+    required this.numberText,
   });
 
-  @override
-  _NumberOfStampsState createState() => _NumberOfStampsState();
-}
-
-class _NumberOfStampsState extends State<NumberOfStamps> {
-  late int stampCount; // Estado interno do contador
-
-  @override
-  void initState() {
-    super.initState();
-    stampCount = widget.initialStampCount; // Inicializa o contador com o valor inicial
-  }
-
   void _increment() {
-    if (stampCount < widget.maxStamps) {
-      setState(() {
-        stampCount++;
-        widget.onStampCountChanged(stampCount); // Envia o valor atualizado
-      });
+    if (stampCount < maxStamps) {
+      onStampCountChanged(stampCount + 1); // Notifica o pai com o novo valor
     }
   }
 
   void _decrement() {
-    if (stampCount > widget.minStamps) {
-      setState(() {
-        stampCount--;
-        widget.onStampCountChanged(stampCount); // Envia o valor atualizado
-      });
+    if (stampCount > minStamps) {
+      onStampCountChanged(stampCount - 1); // Notifica o pai com o novo valor
     }
   }
 
@@ -50,7 +33,7 @@ class _NumberOfStampsState extends State<NumberOfStamps> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        const Text('Number of stamps:'),
+        Text(numberText),
         Row(
           children: [
             IconButton(

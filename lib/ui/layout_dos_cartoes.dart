@@ -13,8 +13,10 @@ class LayoutDosCartoes extends StatefulWidget {
 
 class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
   int stampCount = 5;
+  int numberOfCircles = 1;
   bool newCustomerBonus = false;
   Color stampColor = Colors.black;
+  Color cardColor = Colors.blue;
   IconData stampIcon = Icons.local_pizza;
 
   double colorPosition = 0.5;
@@ -31,7 +33,7 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CustomCard(),
+            CustomCard(cardColor: cardColor, numberOfCircles: numberOfCircles),
             const Divider(), // Linha divisória
 
 
@@ -71,14 +73,27 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
                       slideText: 'Cor do Carimbo:',
                     ),
 
+                    const Divider(),
 
+                    SlideColor(
+                      initialColor: cardColor,
+                      onSlideColorChanged: (newColor) {
+                        setState(() {
+                          cardColor = newColor; // Atualiza a cor no widget pai
+                        });
+                      },
+                      slideText: 'Cor do Cartão:',
+                    ),
 
                     
               
                     const Divider(), // Linha divisória
                     
                     NumberOfStamps(
-                      initialStampCount: stampCount,
+                      numberText: 'Número de Pizzas (Para Exemplo)',
+                      stampCount: stampCount,
+                      minStamps: 1,
+                      maxStamps: 10,
                       onStampCountChanged: (newCount) {
                         setState(() {
                           stampCount = newCount; // Atualiza o valor de stampCount
@@ -86,10 +101,21 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
                       },             
                     ),
 
-
-
-
                     const Divider(), // Linha divisória abaixo do texto e dropdown
+
+                    NumberOfStamps(
+                      numberText: 'Número de Círculos',
+                      stampCount: numberOfCircles,
+                      minStamps: 1,
+                      maxStamps: 12,
+                      onStampCountChanged: (newCount) {
+                        setState(() {
+                          numberOfCircles = newCount; // Atualiza o valor de stampCount
+                        });
+                      },             
+                    ),
+
+                    const Divider(),
                   ],
                 );
               },
