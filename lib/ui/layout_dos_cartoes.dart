@@ -3,8 +3,6 @@ import 'package:test/ui/layout_dos_cartoes/name_of_layout.dart';
 import 'layout_dos_cartoes/number_of_stamps.dart';
 import 'layout_dos_cartoes/card.dart';
 import 'layout_dos_cartoes/slide_color.dart';
-import 'layout_dos_cartoes/stamp.dart';
-import 'layout_dos_cartoes/card_and_stamps.dart';
 
 class LayoutDosCartoes extends StatefulWidget {
   const LayoutDosCartoes({super.key});
@@ -37,10 +35,10 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
           children: [
             
 
-            CircleAndIconController(
-              cardColor: Colors.blue,
+            CustomCard(
+              cardColor: cardColor,
               stampIcon: Icons.local_pizza,
-              stampColor: Colors.orange,
+              stampColor: stampColor,
               stampCount: stampCount,
               numberOfCircles: numberOfCircles,
             ),
