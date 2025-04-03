@@ -88,7 +88,7 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
                       numberText: 'Número de Pizzas (Para Exemplo)',
                       stampCount: stampCount,
                       minStamps: 1,
-                      maxStamps: 18,
+                      maxStamps: numberOfCircles,
                       onStampCountChanged: (newCount) {
                         setState(() {
                           stampCount = newCount; // Atualiza o valor de stampCount
@@ -106,6 +106,10 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
                       onStampCountChanged: (newCount) {
                         setState(() {
                           numberOfCircles = newCount; // Atualiza o valor de stampCount
+                        // Garante que o número de stamps nunca ultrapasse o número de circles
+                            if (stampCount > numberOfCircles) {
+                              stampCount = numberOfCircles;
+                            }
                         });
                       },             
                     ),
