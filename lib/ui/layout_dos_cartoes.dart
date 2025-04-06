@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:test/ui/layout_dos_cartoes/name_of_layout.dart';
+import 'package:test/ui/layout_dos_cartoes/labeled_text_input.dart';
+import 'package:test/ui/layout_dos_cartoes/slide.dart';
 import 'layout_dos_cartoes/number_of_stamps.dart';
 import 'layout_dos_cartoes/card.dart';
 import 'layout_dos_cartoes/slide_color.dart';
@@ -18,6 +19,15 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
   Color stampColor = Colors.black;
   Color cardColor = Colors.blue;
   IconData stampIcon = Icons.local_pizza;
+  Color circleColor = Colors.white;
+  Color upperTextColor = Colors.black;
+  Color lowerTextColor = Colors.black;
+  String upperText = 'insira sua mensagem aqui Upper';
+  String lowerText = 'insira sua mensagem aqui Lower';
+  String exampleText = 'Exemplo';
+  double logoCircleSize = 10.0; // Tamanho do círculo da Logo
+  Color logoCircleColor = Colors.yellow; // Cor do círculo da Logo
+
 
   double colorPosition = 0.5;
 
@@ -33,7 +43,6 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            
 
             CustomCard(
               cardColor: cardColor,
@@ -41,13 +50,16 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
               stampColor: stampColor,
               stampCount: stampCount,
               numberOfCircles: numberOfCircles,
+              circleColor:circleColor,
+              upperTextColor: upperTextColor,
+              lowerTextColor: lowerTextColor,
+              upperText: upperText,
+              lowerText: lowerText,
+              circleSize: logoCircleSize,
+              logoCircleColor: logoCircleColor,
             ),
 
             const Divider(), // Linha divisória
-
-
-            
-
 
           Expanded(
             child: ListView.builder(
@@ -56,10 +68,30 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
                 return Column(
                   children: [
                     
+                    LabeledTextInput(
+                      labelText: 'Mensagem Superior:',
+                      exampleText:'',
+                      onNameChanged: (value) {
+                        setState(() {
+                          upperText = value; // Atualiza o estado com o texto digitado
+                        });
+                      },
+                    ),
 
-                    NameOfLayout(),
-                    //Stamp(stampCount:stampCount, stampIcon:stampIcon, stampColor:stampColor),
-                    const SizedBox(height: 20), const Divider(), const SizedBox(height: 20),
+                    const SizedBox(height: 10), const Divider(),
+
+                    LabeledTextInput(
+                      labelText: 'Mensagem Inferior',
+                      exampleText:'',
+                      onNameChanged: (value) {
+                        setState(() {
+                          lowerText = value; // Atualiza o estado com o texto digitado
+                        });
+                      },
+                    ),
+                    
+                    const SizedBox(height: 10), const Divider(),
+                    
                     SlideColor(
                       initialColor: stampColor,
                       onSlideColorChanged: (newColor) {
@@ -68,8 +100,11 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
                         });
                       },
                       slideText: 'Cor do Carimbo:',
+                      colorPosition: 1,
                     ),
-                    const SizedBox(height: 20), const Divider(), const SizedBox(height: 20),
+
+                    const Divider(),
+
                     SlideColor(
                       initialColor: cardColor,
                       onSlideColorChanged: (newColor) {
@@ -78,12 +113,68 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
                         });
                       },
                       slideText: 'Cor do Cartão:',
+                      colorPosition:0.66,
                     ),
 
-                    
+                    const Divider(),
+
+                    SlideColor(
+                      initialColor: circleColor,
+                      onSlideColorChanged: (newColor) {
+                        setState(() {
+                          circleColor = newColor; // Atualiza a cor no widget pai
+                        });
+                      },
+                      slideText: 'Cor do Círculo:',
+                    ),
               
+                    SlideColor(
+                      initialColor: upperTextColor,
+                      onSlideColorChanged: (newColor) {
+                        setState(() {
+                          upperTextColor = newColor; // Atualiza a cor no widget pai
+                        });
+                      },
+                      slideText: 'Cor do Texto Superior:',
+                      colorPosition:1,
+                    ),
+
+                    SlideColor(
+                      initialColor: lowerTextColor,
+                      onSlideColorChanged: (newColor) {
+                        setState(() {
+                          lowerTextColor = newColor; // Atualiza a cor no widget pai
+                        });
+                      },
+                      slideText: 'Cor do Texto Superior:',
+                      colorPosition:1,
+                    ),
+
                     const Divider(), // Linha divisória
                     
+                    SlideCircle(
+                      onSlideCircleChanged: (newCircleSize) {
+                        setState(() {
+                          logoCircleSize = newCircleSize; // Atualiza o tamanho do circulo no widget pai
+                        });
+                      },
+                      slideText: 'Tamanho do Background da Logo:'
+                    ),
+
+                    const Divider(), // Linha divisória
+
+                    SlideColor(
+                      initialColor: logoCircleColor,
+                      onSlideColorChanged: (newColor) {
+                        setState(() {
+                          logoCircleColor = newColor; // Atualiza a cor no widget pai
+                        });
+                      },
+                      slideText: 'Cor do Círculo da Logo:',
+                      colorPosition:0.4,
+                    ),
+
+
                     NumberOfStamps(
                       numberText: 'Número de Pizzas (Para Exemplo)',
                       stampCount: stampCount,
@@ -130,33 +221,4 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
       ),
     );
   }
-}
-
-
-// Função para interpolar entre as cores
-Color _getInterpolatedColor(double value) {
-  // Lista de cores do GradientPainter
-  final colors = [
-    Colors.black,
-    Colors.brown,
-    Colors.pink,
-    Colors.red,
-    Colors.orange,
-    Colors.yellow,
-    Colors.green,
-    Colors.cyan,
-    Colors.blue,
-    Colors.purple,
-    Colors.white,
-  ];
-
-  // Calcula o índice inicial e final com base no valor do slider
-  final index = (value * (colors.length - 1)).floor();
-  final nextIndex = (index + 1).clamp(0, colors.length - 1);
-
-  // Calcula a proporção entre as duas cores
-  final t = (value * (colors.length - 1)) - index;
-
-  // Interpola entre as duas cores
-  return Color.lerp(colors[index], colors[nextIndex], t)!;
 }

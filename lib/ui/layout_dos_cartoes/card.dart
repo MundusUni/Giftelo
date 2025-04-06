@@ -8,6 +8,13 @@ class CustomCard extends StatefulWidget {
   final IconData stampIcon;
   final int stampCount; // Número de ícones
   final int numberOfCircles; // Número de círculos a serem exibidos
+  final Color circleColor;
+  final Color upperTextColor;
+  final Color lowerTextColor;
+  final String upperText;
+  final String lowerText;
+  final double circleSize;
+  final Color logoCircleColor;
 
   const CustomCard({
     super.key,
@@ -17,6 +24,13 @@ class CustomCard extends StatefulWidget {
     required this.stampColor,
     required this.stampCount,
     required this.numberOfCircles,
+    required this.circleColor,
+    required this.upperTextColor,
+    required this.lowerTextColor,
+    required this.upperText,
+    required this.lowerText,
+    required this.circleSize,
+    required this.logoCircleColor,
   });
 
     @override
@@ -34,42 +48,12 @@ class _CustomCardState extends State<CustomCard> {
     return Container(
       width: 30, // Largura do círculo
       height: 30, // Altura do círculo
-      decoration: const BoxDecoration(
-        color: Colors.white, // Cor do círculo
+      decoration: BoxDecoration(
+        color: widget.circleColor, // Cor do círculo
         shape: BoxShape.circle, // Formato circular
       ),
     );
-  }
-
-
-  @override
-  void initState() {
-    super.initState();
-    // Inicializa os valores locais com os valores do widget pai
-    localStampCount = widget.stampCount;
-    localNumberOfCircles = widget.numberOfCircles;
-  }
-
-  void _updateNumberOfCircles(int newCount) {
-    setState(() {
-      localNumberOfCircles = newCount;
-
-      // Garante que o número de stamps nunca ultrapasse o número de circles
-      if (localStampCount > localNumberOfCircles) {
-        localStampCount = localNumberOfCircles;
-      }
-    });
-  }
-
-  void _updateStampCount(int newCount) {
-    setState(() {
-      // Atualiza o número de stamps, mas garante que ele nunca ultrapasse o número de circles
-      if (newCount <= localNumberOfCircles) {
-        localStampCount = newCount;
-      }
-    });
-  }
-  
+  }  
 
   @override 
   Widget build(BuildContext context) {
@@ -81,74 +65,130 @@ class _CustomCardState extends State<CustomCard> {
 
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-      width: double.infinity,
+      width: 400,
       height: 180, // Ajuste a altura para acomodar três linhas
-      color: widget.cardColor,
-      child: Container(
-        padding: const EdgeInsets.only(left: 90, right: 15, top:40), // Adiciona padding à esquerda e à direita
-        child: Stack(
-          children: [
-            // Círculos no fundo
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Primeira linha de círculos
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: List.generate(
-                      topRowCircles,
-                      (index) => Padding(
-                        padding: const EdgeInsets.only(right: 10),
-                        child: _buildCircle(),
-                      ),
+      decoration: BoxDecoration(
+        color: widget.cardColor, // Cor do Cartão
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(10),
+            child: Stack(
+              children: [
+                Container(
+                  width: double.infinity,
+                  alignment: Alignment.topCenter,
+                  child: Text(
+                    widget.upperText, // 56 Caracteres Texto que será exibido
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: widget.upperTextColor, // Cor do texto superior
                     ),
+                    softWrap: false, // Impede que o texto quebre para a próxima linha
+                    overflow: TextOverflow.fade, // Permite que o texto continue além dos limites
                   ),
-                  if (middleRowCircles > 0) const SizedBox(height: 5), // Espaçamento entre as linhas
-                  // Segunda linha de círculos
-                  if (middleRowCircles > 0)
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: List.generate(
-                      middleRowCircles,
-                      (index) => Padding(
-                        padding: const EdgeInsets.only(right: 10),
-                        child: _buildCircle(),
-                      ),
+                ),
+                // Texto Abaixo dos círculos
+                Container(
+                  width: double.infinity,
+                  alignment: Alignment.bottomCenter,
+                  child: Text(
+                    widget.lowerText, // 56 Caracteres Texto que será exibido
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: widget.lowerTextColor, // Cor do texto inferior
                     ),
+                    softWrap: false, // Impede que o texto quebre para a próxima linha
+                    overflow: TextOverflow.fade, // Permite que o texto continue além dos limites
                   ),
-                  if (bottomRowCircles > 0) const SizedBox(height: 5), // Espaçamento entre as linhas
-                  // Terceira linha de círculos
-                  if (bottomRowCircles > 0)
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: List.generate(
-                      bottomRowCircles,
-                      (index) => Padding(
-                        padding: const EdgeInsets.only(right: 10),
-                        child: _buildCircle(),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            // Conteúdo adicional (ícones de pizza)
-            // Ícones de pizza sobrepostos aos círculos
-            Align(
-              alignment: Alignment.topLeft,
-              child: Stamp(
-                stampCount: widget.stampCount,
-                stampIcon: widget.stampIcon,
-                stampColor: widget.stampColor,
+                ),
+              ],
+            ),
+          ),
+          
+          Padding(
+            padding: const EdgeInsets.only(right:250),
+            child: Align (
+              alignment: Alignment.center, // Alinha horizontalmente à esquerda e verticalmente ao centro
+              child: Container(
+                width: widget.circleSize, // Largura do círculo
+                height: widget.circleSize, // Altura do círculo
+                decoration: BoxDecoration(
+                  color: widget.logoCircleColor, // Cor do círculo
+                  shape: BoxShape.circle, // Formato circular
+                ),
               ),
             ),
-          ],
-        ),
-        
-          /*child: Text(
-            'Cartão',
-            style: TextStyle(color: Colors.white, fontSize: 18),
-          ),*/
+          ),
+
+          Container(
+            clipBehavior: Clip.none,
+            padding: const EdgeInsets.only(left: 102, right: 3, top:40), // Adiciona padding à esquerda e à direita
+            child: Stack(
+              children: [
+                
+                // Círculos no fundo
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Primeira linha de círculos
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: List.generate(
+                          topRowCircles,
+                          (index) => Padding(
+                            padding: const EdgeInsets.only(right: 10),
+                            child: _buildCircle(),
+                          ),
+                        ),
+                      ),
+                      if (middleRowCircles > 0) const SizedBox(height: 5), // Espaçamento entre as linhas
+                      // Segunda linha de círculos
+                      if (middleRowCircles > 0)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: List.generate(
+                          middleRowCircles,
+                          (index) => Padding(
+                            padding: const EdgeInsets.only(right: 10),
+                            child: _buildCircle(),
+                          ),
+                        ),
+                      ),
+                      if (bottomRowCircles > 0) const SizedBox(height: 5), // Espaçamento entre as linhas
+                      // Terceira linha de círculos
+                      if (bottomRowCircles > 0)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: List.generate(
+                          bottomRowCircles,
+                          (index) => Padding(
+                            padding: const EdgeInsets.only(right: 10),
+                            child: _buildCircle(),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                // Ícones de pizza sobrepostos aos círculos
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Stamp(
+                    stampCount: widget.stampCount,
+                    stampIcon: widget.stampIcon,
+                    stampColor: widget.stampColor,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

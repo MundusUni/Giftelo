@@ -68,18 +68,6 @@ await dbHelper.dropUsersTable();
   }
 
 
-/*
-  Future<int> addUser(String name, String phone, String layout, int maxUsos, int usos) async {
-    final db = await database;
-    return await db.insert('users', {
-      'name': name,
-      'phone': phone,
-      'layout': layout,
-      'usos': usos,
-      'max_usos': maxUsos,
-    });
-  }
-*/
 
 Future<int> deleteUser(int id) async {
   final db = await database;
