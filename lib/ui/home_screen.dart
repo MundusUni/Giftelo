@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'lista_de_cadastrados.dart';
-import 'layout_dos_cartoes.dart';
+import 'layout_start.dart';
 import 'config.dart';
 
 
@@ -47,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               controller: _tabController,
               children: const [
                 ListaDeCadastrados(),
-                LayoutDosCartoes(),
+                LayoutStart(),
                 Config(),
               ],
             ),

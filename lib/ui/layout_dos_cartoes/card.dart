@@ -13,7 +13,7 @@ class CustomCard extends StatefulWidget {
   final Color lowerTextColor;
   final String upperText;
   final String lowerText;
-  final double circleSize;
+  final double logoCircleSize;
   final Color logoCircleColor;
 
   const CustomCard({
@@ -29,7 +29,7 @@ class CustomCard extends StatefulWidget {
     required this.lowerTextColor,
     required this.upperText,
     required this.lowerText,
-    required this.circleSize,
+    required this.logoCircleSize,
     required this.logoCircleColor,
   });
 
@@ -115,8 +115,8 @@ class _CustomCardState extends State<CustomCard> {
             child: Align (
               alignment: Alignment.center, // Alinha horizontalmente à esquerda e verticalmente ao centro
               child: Container(
-                width: widget.circleSize, // Largura do círculo
-                height: widget.circleSize, // Altura do círculo
+                width: widget.logoCircleSize, // Largura do círculo
+                height: widget.logoCircleSize, // Altura do círculo
                 decoration: BoxDecoration(
                   color: widget.logoCircleColor, // Cor do círculo
                   shape: BoxShape.circle, // Formato circular

@@ -22,7 +22,7 @@ class _SlideCircleState extends State<SlideCircle> {
   @override
   void initState() {
     super.initState();
-    circleSize = widget.circleSize; // Valor inicial do slider
+    circleSize= widget.circleSize.toDouble(); // Valor inicial do slider
   }
 
 

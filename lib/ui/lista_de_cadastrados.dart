@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../data/database_helper.dart';
+import '../data/database_users.dart';
 
 class ListaDeCadastrados extends StatefulWidget {
   const ListaDeCadastrados({Key? key}) : super(key: key);
@@ -10,7 +10,7 @@ class ListaDeCadastrados extends StatefulWidget {
 
 class _ListaDeCadastradosState extends State<ListaDeCadastrados> {
   List<Map<String, dynamic>> users = [];
-  final _dbHelper = DatabaseHelper();
+  final _dbHelper = DatabaseUser();
 
   final _nameController = TextEditingController();
   final _celularController = TextEditingController();
