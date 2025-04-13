@@ -258,6 +258,7 @@ Future<void> resetLayoutDatabase() async {
         'circle_color': layout['circle_color'], // cor dos círculos atrás dos stamps
         'stamp_color': layout['stamp_color'], // cor dos stamps
         'stamp_icon': layout['stamp'], // ícone utilizado como stamp
+        'number_of_circles': layout['number_of_circles'], // número de círculos atrás dos stamps
         //'logo': layout['logo'], // imagem da logo do cliente
 
       };

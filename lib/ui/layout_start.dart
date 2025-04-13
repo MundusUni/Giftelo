@@ -107,6 +107,8 @@ class _LayoutStartState extends State<LayoutStart> {
                                   final tipoEsperado = tiposEsperados[key] ?? 'Desconhecido';
                                   final tipoArmazenado = value?.runtimeType ?? 'Null';
                                   print('$key: Tipo esperado: $tipoEsperado, Tipo armazenado: $tipoArmazenado, Valor: $value');
+                                  print('aehoo');
+                                  print('Dados do layout selecionado: ${layout[index]}');
                                 });
 
                                 // Aqui você pode adicionar lógica para carregar o layout selecionado
@@ -116,7 +118,7 @@ class _LayoutStartState extends State<LayoutStart> {
                                   MaterialPageRoute(
                                     builder: (context) => LayoutDosCartoes(
                                       stampCount: 1,
-                                      numberOfCircles: (layout[index]['number_of_circles'] == null)? 1: (layout[index]['number_of_circles'] as num).toInt(),
+                                      numberOfCircles: (layout[index]['number_of_circles'] == null)? 1: int.tryParse(layout[index]['number_of_circles'].toString()) ?? 1,
                                       stampColor: Color(layout[index]['stamp_color']),
                                       cardColor: Color(layout[index]['card_color']),
                                       stampIcon: IconData((defaultValues['stamp_icon'] == null)? 0xE5CA: (defaultValues['stamp_icon'] as num).toInt(),fontFamily: 'MaterialIcons',),
