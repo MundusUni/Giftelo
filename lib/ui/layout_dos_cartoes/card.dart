@@ -6,6 +6,7 @@ class CustomCard extends StatefulWidget {
   final Color cardColor;
   final Color stampColor;
   final IconData stampIcon;
+  final IconData stampBackground;
   final int stampCount; // Número de ícones
   final int numberOfCircles; // Número de círculos a serem exibidos
   final Color circleColor;
@@ -21,6 +22,7 @@ class CustomCard extends StatefulWidget {
     //this.onNameChanged,
     required this.cardColor,
     required this.stampIcon,
+    required this.stampBackground,
     required this.stampColor,
     required this.stampCount,
     required this.numberOfCircles,
@@ -143,7 +145,11 @@ class _CustomCardState extends State<CustomCard> {
                           topRowCircles,
                           (index) => Padding(
                             padding: const EdgeInsets.only(right: 10),
-                            child: _buildCircle(),
+                            child: Icon(
+                              widget.stampBackground, // Ícone vindo da variável
+                              size: 30, // Tamanho do ícone
+                              color: widget.circleColor, // Cor do ícone (ou outra cor desejada)
+                            ),
                           ),
                         ),
                       ),
@@ -156,7 +162,11 @@ class _CustomCardState extends State<CustomCard> {
                           middleRowCircles,
                           (index) => Padding(
                             padding: const EdgeInsets.only(right: 10),
-                            child: _buildCircle(),
+                            child: Icon(
+                              widget.stampBackground, // Ícone vindo da variável
+                              size: 30, // Tamanho do ícone
+                              color: widget.circleColor, // Cor do ícone (ou outra cor desejada)
+                            ),
                           ),
                         ),
                       ),
@@ -169,7 +179,11 @@ class _CustomCardState extends State<CustomCard> {
                           bottomRowCircles,
                           (index) => Padding(
                             padding: const EdgeInsets.only(right: 10),
-                            child: _buildCircle(),
+                            child: Icon(
+                              widget.stampBackground, // Ícone vindo da variável
+                              size: 30, // Tamanho do ícone
+                              color: widget.circleColor, // Cor do ícone (ou outra cor desejada)
+                            ),
                           ),
                         ),
                       ),

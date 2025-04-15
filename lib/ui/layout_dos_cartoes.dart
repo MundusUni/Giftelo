@@ -4,6 +4,8 @@ import 'package:test/ui/layout_dos_cartoes/slide.dart';
 import 'layout_dos_cartoes/number_of_stamps.dart';
 import 'layout_dos_cartoes/card.dart';
 import 'layout_dos_cartoes/slide_color.dart';
+import 'layout_dos_cartoes/stamp_background.dart';
+
 import '../data/database_layout.dart';
 import 'package:sqflite/sqflite.dart'; // Para getDatabasesPath
 import 'package:path/path.dart'; // Para join
@@ -16,6 +18,7 @@ class LayoutDosCartoes extends StatefulWidget {
   Color stampColor = Colors.black;
   Color cardColor = Colors.blue;
   IconData stampIcon = Icons.local_pizza;
+  IconData stampBackground = IconData(0xe163, fontFamily: 'MaterialIcons');
   Color circleColor = Colors.white;
   Color upperTextColor = Colors.black;
   Color lowerTextColor = Colors.black;
@@ -122,6 +125,7 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
             CustomCard(
               cardColor: widget.cardColor,
               stampIcon: Icons.local_pizza,
+              stampBackground: widget.stampBackground,
               stampColor: widget.stampColor,
               stampCount: widget.stampCount,
               numberOfCircles: widget.numberOfCircles,
@@ -293,6 +297,19 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
                     ),
 
                     const Divider(),
+
+                    StampBackgroundSelector(
+                      stampBackground: widget.stampBackground,
+                      circleColor: widget.circleColor,
+                      onShapeChanged: (newBackground) {
+                        setState(() {
+                          widget.stampBackground = newBackground; // Atualiza o ícone de background do stamp
+                        });
+                      },
+                    ),
+
+                    const Divider(),
+
                   ],
                 );
               },
