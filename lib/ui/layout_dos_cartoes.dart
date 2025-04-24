@@ -5,6 +5,7 @@ import 'layout_dos_cartoes/number_of_stamps.dart';
 import 'layout_dos_cartoes/card.dart';
 import 'layout_dos_cartoes/slide_color.dart';
 import 'layout_dos_cartoes/stamp_background.dart';
+import 'layout_dos_cartoes/icon_references.dart';
 
 import '../data/database_layout.dart';
 import 'package:sqflite/sqflite.dart'; // Para getDatabasesPath
@@ -305,21 +306,7 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
                     const Divider(),
 
                     StampBackgroundSelector(
-                      iconOptions: [
-                        {'icon': IconData(0xe163, fontFamily: 'MaterialIcons'), 'label': 'Círculo'},
-                        {'icon': IconData(0xf0570, fontFamily: 'MaterialIcons'), 'label': 'Quadrado'},
-                        {'icon': IconData(0xf0385, fontFamily: 'MaterialIcons'), 'label': 'Quadrado Arredondado'},
-                        {'icon': IconData(0xf0546, fontFamily: 'MaterialIcons'), 'label': 'Pentágono'},
-                        {'icon': IconData(0xf0517, fontFamily: 'MaterialIcons'), 'label': 'Hexágono'},
-                        {'icon': IconData(0xe25b, fontFamily: 'MaterialIcons'), 'label': 'Coração'},
-                        {'icon': IconData(0xe596, fontFamily: 'MaterialIcons'), 'label': 'Escudo'},
-                        {'icon': IconData(0xe2a3, fontFamily: 'MaterialIcons'), 'label': 'Pasta'},
-                        {'icon': IconData(0xe6f2, fontFamily: 'MaterialIcons'), 'label': 'Maleta'},
-                        {'icon': IconData(0xe154, fontFamily: 'MaterialIcons'), 'label': 'Chat'},
-                        {'icon': IconData(0xe16f, fontFamily: 'MaterialIcons'), 'label': 'Nuvem'},
-                        {'icon': IconData(0xe0f1, fontFamily: 'MaterialIcons'), 'label': 'Marcador'},
-                        {'icon': IconData(0xe5f9, fontFamily: 'MaterialIcons'), 'label': 'Estrela'},
-                      ],
+                      iconOptions: stampBackgroundIconsMap,
                       stampBackground: widget.stampBackground,
                       circleColor: widget.circleColor,
                       text: 'Selecione o Ícone do Background:',
@@ -333,22 +320,7 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
                     const Divider(),
 
                     StampBackgroundSelector(
-                      iconOptions: [
-                        {'icon': IconData(0xe163, fontFamily: 'MaterialIcons'), 'label': 'Círculo'},
-                        {'icon': IconData(0xf0570, fontFamily: 'MaterialIcons'), 'label': 'Quadrado'},
-                        {'icon': IconData(0xf0385, fontFamily: 'MaterialIcons'), 'label': 'Quadrado Arredondado'},
-                        {'icon': IconData(0xf0546, fontFamily: 'MaterialIcons'), 'label': 'Pentágono'},
-                        {'icon': IconData(0xf0517, fontFamily: 'MaterialIcons'), 'label': 'Hexágono'},
-                        {'icon': IconData(0xe25b, fontFamily: 'MaterialIcons'), 'label': 'Coração'},
-                        {'icon': IconData(0xe596, fontFamily: 'MaterialIcons'), 'label': 'Escudo'},
-                        {'icon': IconData(0xe2a3, fontFamily: 'MaterialIcons'), 'label': 'Pasta'},
-                        {'icon': IconData(0xe6f2, fontFamily: 'MaterialIcons'), 'label': 'Maleta'},
-                        {'icon': IconData(0xe154, fontFamily: 'MaterialIcons'), 'label': 'Chat'},
-                        {'icon': IconData(0xe16f, fontFamily: 'MaterialIcons'), 'label': 'Nuvem'},
-                        {'icon': IconData(0xe0f1, fontFamily: 'MaterialIcons'), 'label': 'Marcador'},
-                        {'icon': IconData(0xe5f9, fontFamily: 'MaterialIcons'), 'label': 'Estrela'},
-                        {'icon': IconData(0xe3a0, fontFamily: 'MaterialIcons'), 'label': 'Pizza'},
-                      ],
+                      iconOptions: stampIconsMap,
                       stampBackground: widget.stampIcon,
                       circleColor: widget.iconColor,
                       text: 'Selecione o Ícone do Carimbo:',
