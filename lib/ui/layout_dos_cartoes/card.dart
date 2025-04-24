@@ -15,7 +15,10 @@ class CustomCard extends StatefulWidget {
   final String upperText;
   final String lowerText;
   final double logoCircleSize;
+  final int circleSize;
+  final int iconSize;
   final Color logoCircleColor;
+
 
   const CustomCard({
     super.key,
@@ -33,6 +36,8 @@ class CustomCard extends StatefulWidget {
     required this.lowerText,
     required this.logoCircleSize,
     required this.logoCircleColor,
+    required this.circleSize,
+    required this.iconSize,
   });
 
     @override
@@ -59,11 +64,6 @@ class _CustomCardState extends State<CustomCard> {
 
   @override 
   Widget build(BuildContext context) {
-    // Divide os círculos em duas linhas
-    final int circlesPerRow = 6; // Máximo de círculos por linha
-    final int topRowCircles = widget.numberOfCircles > circlesPerRow ? circlesPerRow : widget.numberOfCircles;
-    final int middleRowCircles = widget.numberOfCircles > 2 * circlesPerRow ? circlesPerRow : (widget.numberOfCircles > circlesPerRow ? widget.numberOfCircles - circlesPerRow : 0);
-    final int bottomRowCircles = widget.numberOfCircles > 2 * circlesPerRow ? widget.numberOfCircles - 2 * circlesPerRow : 0;
 
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
@@ -75,6 +75,8 @@ class _CustomCardState extends State<CustomCard> {
       ),
       child: Stack(
         children: [
+          
+          // Texto acima e abaixo dos círculos
           Padding(
             padding: const EdgeInsets.all(10),
             child: Stack(
@@ -112,6 +114,7 @@ class _CustomCardState extends State<CustomCard> {
             ),
           ),
           
+          // Círculo branco à esquerda
           Padding(
             padding: const EdgeInsets.only(right:250),
             child: Align (
@@ -127,6 +130,51 @@ class _CustomCardState extends State<CustomCard> {
             ),
           ),
 
+          Container(
+            margin: const EdgeInsets.only(left: 96, right: 12, top:33),
+            width: 400,
+            height: 180, // Altura total do cartão
+            decoration: BoxDecoration(
+              color: widget.cardColor, // Cor do cartão
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Stack(
+              children: [
+                // GridView para os círculos
+                GridView.builder(
+                  physics: const NeverScrollableScrollPhysics(), // Desativa o scroll
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 6, // 6 círculos por linha
+                    crossAxisSpacing: 10, // Espaçamento horizontal entre os círculos
+                    mainAxisSpacing: 10, // Espaçamento vertical entre as linhas
+                  ),
+                  itemCount: widget.numberOfCircles, // Número total de círculos
+                  itemBuilder: (context, index) {
+                    return Center(
+                      child: Icon(
+                        widget.stampBackground, // Ícone do círculo
+                        size: widget.circleSize.toDouble(), // Tamanho do ícone
+                        color: widget.circleColor, // Cor do círculo
+                      ),
+                    );
+                  },
+                ),
+                // Ícones de pizza sobrepostos aos círculos
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Stamp(
+                    iconSize: widget.iconSize,
+                    stampCount: widget.stampCount,
+                    stampIcon: widget.stampIcon,
+                    stampColor: widget.stampColor,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          /*
+          // Círculos de fundo
           Container(
             clipBehavior: Clip.none,
             padding: const EdgeInsets.only(left: 102, right: 3, top:40), // Adiciona padding à esquerda e à direita
@@ -202,6 +250,8 @@ class _CustomCardState extends State<CustomCard> {
               ],
             ),
           ),
+          */
+
         ],
       ),
     );

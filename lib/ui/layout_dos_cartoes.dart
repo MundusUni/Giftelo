@@ -17,15 +17,18 @@ class LayoutDosCartoes extends StatefulWidget {
   bool PhraseAppears = false;
   Color stampColor = Colors.black;
   Color cardColor = Colors.blue;
-  IconData stampIcon = Icons.local_pizza;
+  IconData stampIcon =  IconData(0xe3a0, fontFamily: 'MaterialIcons');
   IconData stampBackground = IconData(0xe163, fontFamily: 'MaterialIcons');
   Color circleColor = Colors.white;
+  Color iconColor = Colors.yellow;
   Color upperTextColor = Colors.black;
   Color lowerTextColor = Colors.black;
   String upperText = 'insira sua mensagem aqui Upper';
   String lowerText = 'insira sua mensagem aqui Lower';
   String exampleText = 'Exemplo';
   int logoCircleSize = 10; // Tamanho do círculo da Logo
+  int circleSize = 35; // Tamanho do círculo do carimbo
+  int iconSize = 35; // Tamanho do ícone do carimbo
   Color logoCircleColor = Colors.yellow; // Cor do círculo da Logo
   double colorPosition = 1.0;
   String nameLayout ='Novo Layout';
@@ -124,7 +127,7 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
 
             CustomCard(
               cardColor: widget.cardColor,
-              stampIcon: Icons.local_pizza,
+              stampIcon: widget.stampIcon,
               stampBackground: widget.stampBackground,
               stampColor: widget.stampColor,
               stampCount: widget.stampCount,
@@ -136,6 +139,8 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
               lowerText: widget.lowerText,
               logoCircleSize: widget.logoCircleSize.toDouble(),
               logoCircleColor: widget.logoCircleColor,
+              iconSize: widget.iconSize,
+              circleSize: widget.circleSize
             ),
 
             const Divider(), // Linha divisória
@@ -249,7 +254,8 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
                           widget.logoCircleSize = newCircleSize.toInt(); // Atualiza o tamanho do circulo no widget pai
                         });
                       },
-                      slideText: 'Tamanho do Background da Logo:'
+                      slideText: 'Tamanho do Background da Logo:',
+                      maxSize: 70.0,
                     ),
 
                     const Divider(), // Linha divisória
@@ -299,8 +305,24 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
                     const Divider(),
 
                     StampBackgroundSelector(
+                      iconOptions: [
+                        {'icon': IconData(0xe163, fontFamily: 'MaterialIcons'), 'label': 'Círculo'},
+                        {'icon': IconData(0xf0570, fontFamily: 'MaterialIcons'), 'label': 'Quadrado'},
+                        {'icon': IconData(0xf0385, fontFamily: 'MaterialIcons'), 'label': 'Quadrado Arredondado'},
+                        {'icon': IconData(0xf0546, fontFamily: 'MaterialIcons'), 'label': 'Pentágono'},
+                        {'icon': IconData(0xf0517, fontFamily: 'MaterialIcons'), 'label': 'Hexágono'},
+                        {'icon': IconData(0xe25b, fontFamily: 'MaterialIcons'), 'label': 'Coração'},
+                        {'icon': IconData(0xe596, fontFamily: 'MaterialIcons'), 'label': 'Escudo'},
+                        {'icon': IconData(0xe2a3, fontFamily: 'MaterialIcons'), 'label': 'Pasta'},
+                        {'icon': IconData(0xe6f2, fontFamily: 'MaterialIcons'), 'label': 'Maleta'},
+                        {'icon': IconData(0xe154, fontFamily: 'MaterialIcons'), 'label': 'Chat'},
+                        {'icon': IconData(0xe16f, fontFamily: 'MaterialIcons'), 'label': 'Nuvem'},
+                        {'icon': IconData(0xe0f1, fontFamily: 'MaterialIcons'), 'label': 'Marcador'},
+                        {'icon': IconData(0xe5f9, fontFamily: 'MaterialIcons'), 'label': 'Estrela'},
+                      ],
                       stampBackground: widget.stampBackground,
                       circleColor: widget.circleColor,
+                      text: 'Selecione o Ícone do Background:',
                       onShapeChanged: (newBackground) {
                         setState(() {
                           widget.stampBackground = newBackground; // Atualiza o ícone de background do stamp
@@ -309,6 +331,57 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
                     ),
 
                     const Divider(),
+
+                    StampBackgroundSelector(
+                      iconOptions: [
+                        {'icon': IconData(0xe163, fontFamily: 'MaterialIcons'), 'label': 'Círculo'},
+                        {'icon': IconData(0xf0570, fontFamily: 'MaterialIcons'), 'label': 'Quadrado'},
+                        {'icon': IconData(0xf0385, fontFamily: 'MaterialIcons'), 'label': 'Quadrado Arredondado'},
+                        {'icon': IconData(0xf0546, fontFamily: 'MaterialIcons'), 'label': 'Pentágono'},
+                        {'icon': IconData(0xf0517, fontFamily: 'MaterialIcons'), 'label': 'Hexágono'},
+                        {'icon': IconData(0xe25b, fontFamily: 'MaterialIcons'), 'label': 'Coração'},
+                        {'icon': IconData(0xe596, fontFamily: 'MaterialIcons'), 'label': 'Escudo'},
+                        {'icon': IconData(0xe2a3, fontFamily: 'MaterialIcons'), 'label': 'Pasta'},
+                        {'icon': IconData(0xe6f2, fontFamily: 'MaterialIcons'), 'label': 'Maleta'},
+                        {'icon': IconData(0xe154, fontFamily: 'MaterialIcons'), 'label': 'Chat'},
+                        {'icon': IconData(0xe16f, fontFamily: 'MaterialIcons'), 'label': 'Nuvem'},
+                        {'icon': IconData(0xe0f1, fontFamily: 'MaterialIcons'), 'label': 'Marcador'},
+                        {'icon': IconData(0xe5f9, fontFamily: 'MaterialIcons'), 'label': 'Estrela'},
+                        {'icon': IconData(0xe3a0, fontFamily: 'MaterialIcons'), 'label': 'Pizza'},
+                      ],
+                      stampBackground: widget.stampIcon,
+                      circleColor: widget.iconColor,
+                      text: 'Selecione o Ícone do Carimbo:',
+                      onShapeChanged: (newIcon) {
+                        setState(() {
+                          widget.stampIcon = newIcon; // Atualiza o ícone de background do stamp
+                        });
+                      },
+                    ),
+
+                    const Divider(),
+
+                     SlideCircle(
+                      onSlideCircleChanged: (newCircleSize) {
+                        setState(() {
+                          widget.iconSize = newCircleSize.toInt(); // Atualiza o tamanho do circulo no widget pai
+                        });
+                      },
+                      slideText: 'Tamanho do Carimbo:',
+                      maxSize: 35.0,
+                    ),
+
+                    const Divider(),
+
+                     SlideCircle(
+                      onSlideCircleChanged: (newCircleSize) {
+                        setState(() {
+                          widget.circleSize = newCircleSize.toInt(); // Atualiza o tamanho do circulo no widget pai
+                        });
+                      },
+                      slideText: 'Tamanho do objeto atrás do Carimbo:',
+                      maxSize: 50.0,
+                    ),
 
                   ],
                 );

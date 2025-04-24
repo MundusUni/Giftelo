@@ -45,7 +45,7 @@ class _LayoutStartState extends State<LayoutStart> {
                       //PhraseAppears: defaultValues['PhraseAppears'] ?? '',
                       stampColor: Color(int.tryParse(defaultValues['stamp_color']?.toString() ?? '0xFF000000') ?? 0xFF000000),
                       cardColor: Color(int.tryParse(defaultValues['card_color']?.toString() ?? '0xFF00008B') ?? 0xFF00008B),
-                      stampIcon: IconData((defaultValues['stamp_icon'] is num) ? (defaultValues['stamp_icon'] as num).toInt() : 0xE5CA, fontFamily: 'MaterialIcons',),
+                      stampIcon: IconData((defaultValues['stamp_icon'] is num) ? (defaultValues['stamp_icon'] as num).toInt() : 0xe3a0, fontFamily: 'MaterialIcons',),
                       circleColor: Color(int.tryParse(defaultValues['circle_color']?.toString() ?? '0xFFFFFFFF') ?? 0xFFFFFFFF),
                       upperTextColor: Color(int.tryParse(defaultValues['upper_text_color']?.toString() ?? '0xFF000000') ?? 0xFF000000),
                       lowerTextColor: Color(int.tryParse(defaultValues['lower_text_color']?.toString() ?? '0xFF000000') ?? 0xFF000000),

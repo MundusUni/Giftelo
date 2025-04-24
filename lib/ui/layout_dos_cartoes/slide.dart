@@ -4,12 +4,14 @@ class SlideCircle extends StatefulWidget {
   final ValueChanged<double> onSlideCircleChanged; // Callback para enviar a cor atualizada
   final String slideText; // Texto do slider
   final double circleSize; // Posição do slider
+  final double maxSize; // Tamanho máximo do slider
 
   const SlideCircle({
     super.key,
     required this.onSlideCircleChanged,
     required this.slideText,
     this.circleSize = 0,
+    required this.maxSize,
   });
 
   @override
@@ -45,7 +47,7 @@ class _SlideCircleState extends State<SlideCircle> {
               child: Slider(
                 value: circleSize, // Valor dinâmico do slider
                 min: 0.0,
-                max: 70.0,
+                max: widget.maxSize,
                 onChanged: (value) {
                   setState(() {
                     circleSize = value; // Atualiza a posição do slider

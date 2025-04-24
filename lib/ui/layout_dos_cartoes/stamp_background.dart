@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 
 class StampBackgroundSelector extends StatefulWidget {
+  final List<Map<String, dynamic>> iconOptions; // Lista de ícones e rótulos
   final IconData stampBackground; // Variável para armazenar o formato atual
   final Color circleColor; // Cor do círculo
   final ValueChanged<IconData> onShapeChanged; // Callback para passar o valor para o widget pai
+  final String text; // Texto a ser exibido no widget
 
 
   const StampBackgroundSelector({
     super.key,
+    required this.iconOptions, // Lista de opções passada pelo widget pai
     this.stampBackground = const IconData(0xe163, fontFamily: 'MaterialIcons'), // Valor padrão
     this.circleColor = Colors.white, // Cor padrão
+    this.text = 'Selecione o Ícone:',
     required this.onShapeChanged,
   });
 
@@ -38,24 +42,30 @@ class _StampBackgroundSelectorState extends State<StampBackgroundSelector> {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      contentPadding: EdgeInsets.zero, // Remove o padding padrão
       title: Row(
         children: [
-          Expanded(
+          Flexible(
             child: Align(
               alignment: Alignment.centerLeft, // Alinha o texto à esquerda
-              child: const Text('Selecione o Ícone:'),
+              child: Text(
+                widget.text,
+                style: const TextStyle(
+                  fontSize: 14, // Define o tamanho da fonte
+                  fontWeight: FontWeight.normal, // Define o peso da fonte (opcional)
+                  color: Colors.black, // Define a cor do texto (opcional)
+                ),
+                overflow: TextOverflow.visible, // Adiciona "..." se o texto for muito longo
+                maxLines: 1, // Garante que o texto fique em uma única linha
+              ),
             ),
           ),
-          Align(),
-          Expanded(
-            child: Align(
-              alignment: Alignment.centerRight, // Alinha o ícone ao centro
-              child: _buildIcon(currentIcon), // Exibe o ícone atual
-            ),
+          Align(
+            alignment: Alignment.centerRight, // Alinha o ícone à direita
+            child: _buildIcon(currentIcon), // Exibe o ícone atual
           ),
         ],
-      ),
-          
+      ), 
           
       onTap: () async {
         // Exibe o Popup e aguarda a escolha do usuário
@@ -66,21 +76,29 @@ class _StampBackgroundSelectorState extends State<StampBackgroundSelector> {
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                _popupOption(IconData(0xe163, fontFamily: 'MaterialIcons'), 'Círculo'),
-                _popupOption(IconData(0xf0570, fontFamily: 'MaterialIcons'), 'Quadrado'),
-                _popupOption(IconData(0xf0385, fontFamily: 'MaterialIcons'), 'Quadrado Arredondado'),
-                _popupOption(IconData(0xf0546, fontFamily: 'MaterialIcons'), 'Pentágono'),
-                _popupOption(IconData(0xf0517, fontFamily: 'MaterialIcons'), 'Hexágono'),
-                _popupOption(IconData(0xe25b, fontFamily: 'MaterialIcons'), 'Coração'),
-                _popupOption(IconData(0xe596, fontFamily: 'MaterialIcons'), 'Escudo'),
-                _popupOption(IconData(0xe2a3, fontFamily: 'MaterialIcons'), 'Pasta'),
-                _popupOption(IconData(0xe6f2, fontFamily: 'MaterialIcons'), 'Maleta'),
-                _popupOption(IconData(0xe154, fontFamily: 'MaterialIcons'), 'Chat'),
-                _popupOption(IconData(0xe16f, fontFamily: 'MaterialIcons'), 'Nuvem'),
-                _popupOption(IconData(0xe0f1, fontFamily: 'MaterialIcons'), 'Marcador'),
-                _popupOption(IconData(0xe5f9, fontFamily: 'MaterialIcons'), 'Estrela'),
-
-                
+                // Conteúdo rolável
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: widget.iconOptions.map((option) {
+                        return _popupOption(
+                          option['icon'] as IconData, // Ícone
+                          option['label'] as String, // Rótulo
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ),
+                // Indicador visual no final
+                const Padding(
+                  padding: EdgeInsets.only(top: 8.0),
+                  child: Icon(
+                    Icons.arrow_downward, // Ícone de seta para cima
+                    size: 24,
+                    color: Colors.grey,
+                  ),
+                ),
               ],
             ),
           ),
