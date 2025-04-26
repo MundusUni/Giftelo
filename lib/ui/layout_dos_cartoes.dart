@@ -6,16 +6,20 @@ import 'layout_dos_cartoes/card.dart';
 import 'layout_dos_cartoes/slide_color.dart';
 import 'layout_dos_cartoes/stamp_background.dart';
 import 'layout_dos_cartoes/icon_references.dart';
+import 'layout_dos_cartoes/logo_uploader.dart';
 
 import '../data/database_layout.dart';
 import 'package:sqflite/sqflite.dart'; // Para getDatabasesPath
 import 'package:path/path.dart'; // Para join
+import 'dart:io';
+import 'dart:typed_data';
+
 
 class LayoutDosCartoes extends StatefulWidget {
 
   int stampCount = 1;
   int numberOfCircles = 1;
-  bool PhraseAppears = false;
+  bool phraseAppears = false;
   Color stampColor = Colors.black;
   Color cardColor = Colors.blue;
   IconData stampIcon =  IconData(0xe3a0, fontFamily: 'MaterialIcons');
@@ -33,6 +37,8 @@ class LayoutDosCartoes extends StatefulWidget {
   Color logoCircleColor = Colors.yellow; // Cor do círculo da Logo
   double colorPosition = 1.0;
   String nameLayout ='Novo Layout';
+  File? logo; // Variável para armazenar a imagem carregada
+  int logoSize;
 
   LayoutDosCartoes({
     super.key,
@@ -52,6 +58,8 @@ class LayoutDosCartoes extends StatefulWidget {
     required this.logoCircleSize,
     required this.logoCircleColor,
     required this.nameLayout,
+    required this.logo,
+    required this.logoSize,
   });
 
   @override
@@ -61,6 +69,13 @@ class LayoutDosCartoes extends StatefulWidget {
 class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
   @override
   Widget build(BuildContext context) {
+
+  //Converte a variável logo de 'File?' para 'Uint8List'
+  Future<List<int>> convertImageToBytes(File imageFile) async {
+    final bytes = await imageFile.readAsBytes(); // Lê o arquivo como bytes
+    return bytes;
+  }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.nameLayout.isNotEmpty
@@ -74,6 +89,13 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
               // Obtém o caminho completo do banco de dados e imprime no console
               final dbPath = await getDatabasesPath();
               print('Banco de dados em uso: ${join(dbPath, 'layouts.db')}');
+
+              // Converte a imagem de logo para bytes
+              List<int>? logoBytes;
+              if (widget.logo != null) {
+                logoBytes = await convertImageToBytes(widget.logo!);
+              }
+
               // Verifica se o layout já existe no banco de dados
               final existingLayout = await dbHelper.getLayoutByName(widget.nameLayout);
 
@@ -93,6 +115,8 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
                   stampIcon: widget.stampIcon.codePoint,
                   numberOfCircles: widget.numberOfCircles,
                   logoCircleSize: widget.logoCircleSize,
+                  logo: logoBytes != null ? Uint8List.fromList(logoBytes) : null,
+                  logoSize: widget.logoSize,
                 );
                 print('Layout atualizado com sucesso!');
               } else {
@@ -111,6 +135,8 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
                   stampIcon: widget.stampIcon.codePoint,
                   numberOfCircles: widget.numberOfCircles,
                   logoCircleSize: widget.logoCircleSize,
+                  logo: logoBytes != null ? Uint8List.fromList(logoBytes) : null,
+                  logoSize: widget.logoSize,
                 );
                 print('Novo layout salvo com sucesso!');
               }
@@ -141,7 +167,9 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
               logoCircleSize: widget.logoCircleSize.toDouble(),
               logoCircleColor: widget.logoCircleColor,
               iconSize: widget.iconSize,
-              circleSize: widget.circleSize
+              circleSize: widget.circleSize,
+              logo: widget.logo,
+              logoSize: widget.logoSize.toDouble(),
             ),
 
             const Divider(), // Linha divisória
@@ -243,7 +271,7 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
                           widget.lowerTextColor = newColor; // Atualiza a cor no widget pai
                         });
                       },
-                      slideText: 'Cor do Texto Superior:',
+                      slideText: 'Cor do Texto Inferior:',
                       colorPosition:1,
                     ),
 
@@ -354,6 +382,30 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
                       slideText: 'Tamanho do objeto atrás do Carimbo:',
                       maxSize: 50.0,
                     ),
+
+                    const Divider(),
+                    
+                    LogoUploader(
+                      onLogoSelected: (logo) {
+                        setState(() {
+                          widget.logo = logo; // Armazena o caminho da imagem carregada
+                        });
+                      },
+                    ),
+
+                    const Divider(),  
+
+                    SlideCircle(
+                      onSlideCircleChanged: (newLogoSize) {
+                        setState(() {
+                          widget.logoSize = newLogoSize.toInt(); // Atualiza o tamanho do circulo no widget pai
+                        });
+                      },
+                      slideText: 'Tamanho da Logo:',
+                      maxSize: 70.0,
+                    ),
+
+
 
                   ],
                 );

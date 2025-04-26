@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'dart:typed_data';
 
 class DatabaseLayout {
   // Singleton: garante que apenas uma instância de DatabaseHelper será criada.
@@ -29,6 +30,27 @@ class DatabaseLayout {
     }
   }
   
+
+///// Código para adicionar uma nova coluna
+///
+Future<void> addLogoSizeColumnIfNotExists() async {
+  final db = await layoutDatabase;
+
+  // Primeiro, verifica se a coluna já existe
+  final result = await db.rawQuery("PRAGMA table_info(layout_table)");
+
+  final columnExists = result.any((column) => column['name'] == 'logo_size');
+
+  if (!columnExists) {
+    // Se a coluna não existir, adiciona
+    await db.execute("ALTER TABLE layout_table ADD COLUMN logo_size INTEGER DEFAULT 0");
+    print('Coluna logo_size adicionada com sucesso.');
+  } else {
+    print('A coluna logo_size já existe.');
+  }
+}
+///
+/////
 
 
 ///// Código para Deletar e Recriar o banco de dados do Layout
@@ -76,6 +98,7 @@ Future<void> resetLayoutDatabase() async {
             stamp_icon INTEGER DEFAULT 58826, 
             logo BLOB,
             number_of_circles INTEGER DEFAULT 1
+            logo_size INTEGER DEFAULT 0,
           )
         ''');
       },
@@ -150,6 +173,8 @@ Future<void> resetLayoutDatabase() async {
     required int stampIcon,
     required int numberOfCircles,
     required int logoCircleSize,
+    required Uint8List? logo,
+    required int logoSize,
   }) async {
     final db = await layoutDatabase;
     await db.update(
@@ -167,6 +192,8 @@ Future<void> resetLayoutDatabase() async {
         'stamp_icon': stampIcon,
         'number_of_circles': numberOfCircles,
         'logo_circle_size': logoCircleSize,
+        'logo': logo,
+        'logo_size': logoSize, // Tamanho do arquivo da logo
       },
       where: 'name_layout = ?',
       whereArgs: [nameLayout],
@@ -187,6 +214,8 @@ Future<void> resetLayoutDatabase() async {
     required int stampIcon,
     required int numberOfCircles,
     required int logoCircleSize,
+    required Uint8List? logo,
+    required int logoSize,
   }) async {
     final db = await layoutDatabase;
     await db.insert(
@@ -205,6 +234,8 @@ Future<void> resetLayoutDatabase() async {
         'stamp_icon': stampIcon,
         'number_of_circles': numberOfCircles,
         'logo_circle_size': logoCircleSize,
+        'logo': logo,
+        'logo_size': logoSize,
       },
     );
   }
@@ -257,10 +288,10 @@ Future<void> resetLayoutDatabase() async {
         'logo_circle_color': layout['logo_circle_color'], // cor do círculo atrás da logo
         'circle_color': layout['circle_color'], // cor dos círculos atrás dos stamps
         'stamp_color': layout['stamp_color'], // cor dos stamps
-        'stamp_icon': layout['stamp'], // ícone utilizado como stamp
+        'stamp_icon': layout['stamp_icon'], // ícone utilizado como stamp
         'number_of_circles': layout['number_of_circles'], // número de círculos atrás dos stamps
-        //'logo': layout['logo'], // imagem da logo do cliente
-
+        'logo': layout['logo'], // imagem da logo do cliente
+        'logo size': layout['logo_size'], // tamanho da logo do cliente
       };
     }).toList();
   }

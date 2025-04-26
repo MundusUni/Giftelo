@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'layout_dos_cartoes.dart'; // Importa o layout_dos_cartoes.dart
 import '../data/database_layout.dart'; // Importa o database_helper.dart
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
+import 'dart:typed_data';
 
 class LayoutStart extends StatefulWidget {
   const LayoutStart({super.key});
@@ -13,6 +16,16 @@ class _LayoutStartState extends State<LayoutStart> {
 
   @override
   Widget build(BuildContext context) {
+    
+    //Converte a variável logo de 'Uint8List' para 'File?'
+    File? convertBytesToFile(Uint8List? bytes) {
+      if (bytes == null || bytes.isEmpty) {return null;}
+      final tempDir = Directory.systemTemp;
+      final tempFile = File('${tempDir.path}/temp_logo_${DateTime.now().millisecondsSinceEpoch}.png');
+      tempFile.writeAsBytesSync(bytes); // <- usando SÍNCRONO
+      return tempFile;
+    }
+
     return Scaffold(
       appBar: AppBar(
         //title: const Text('Início'),
@@ -21,7 +34,9 @@ class _LayoutStartState extends State<LayoutStart> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+
             //Botão para resetar banco de dados
+            /*
             ElevatedButton(
               onPressed: () async {
                 await DatabaseLayout().resetLayoutDatabase();
@@ -29,6 +44,8 @@ class _LayoutStartState extends State<LayoutStart> {
               },
               child: const Text('Resetar Banco de Dados'),
             ),
+            */
+
             //Botão de Novo
             ElevatedButton(
               onPressed: () async {
@@ -55,6 +72,8 @@ class _LayoutStartState extends State<LayoutStart> {
                       logoCircleSize: (defaultValues['logo_circle_size'] == null || defaultValues['logo_circle_size'] == 0) ? 50 : (defaultValues['logo_circle_size'] as num).toInt(),
                       logoCircleColor: Color(int.tryParse(defaultValues['logo_circle_color']?.toString() ?? '0xFFFFFFFF') ?? 0xFFFFFFFF),
                       nameLayout: defaultValues['name_layout']?.toString() ?? 'Novo Layout', // Adicione esta linha
+                      logo: defaultValues['logo'], // Adicione esta linha
+                      logoSize: (defaultValues['logo_size'] == null || defaultValues['logo_size'] == 0) ? 50 : (defaultValues['logo_size'] as num).toInt(),
                     ),
                   ),
                 );
@@ -62,6 +81,8 @@ class _LayoutStartState extends State<LayoutStart> {
               child: const Text('Novo'),
             ),
             const SizedBox(height: 30), // Espaçamento entre os botões
+            
+            //Botão de Load
             ElevatedButton(
               onPressed: () async {
                 // Obtém os layouts do banco de dados
@@ -103,6 +124,8 @@ class _LayoutStartState extends State<LayoutStart> {
                                     'extra_phrase': 'String',
                                     'logo_circle_size': 'int',
                                     'logo_circle_color': 'int',
+                                    'logo': 'String',
+                                    'logo_size': 'int',
                                   };
                                   final tipoEsperado = tiposEsperados[key] ?? 'Desconhecido';
                                   final tipoArmazenado = value?.runtimeType ?? 'Null';
@@ -113,6 +136,9 @@ class _LayoutStartState extends State<LayoutStart> {
 
                                 // Aqui você pode adicionar lógica para carregar o layout selecionado
                                 print('Layout selecionado: ${layout[index]['name_layout']}');
+                                /////
+
+
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -131,6 +157,8 @@ class _LayoutStartState extends State<LayoutStart> {
                                       logoCircleSize: (layout[index]['logo_circle_size'] == null) ? 50 : (layout[index]['logo_circle_size'] as num).toInt(),
                                       logoCircleColor: Color(layout[index]['logo_circle_color']),
                                       nameLayout: layout[index]['name_layout'] ?? 'Novo Layout',
+                                      logo: layout[index]['logo'] != null ? convertBytesToFile(layout[index]['logo']) : null,
+                                      logoSize: (layout[index]['logo_size'] == null) ? 50 : (layout[index]['logo_size'] as num).toInt(),
                                     ),
                                   ),
                                 );

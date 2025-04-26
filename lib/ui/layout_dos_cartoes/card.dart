@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'stamp.dart';
+import 'dart:io';
 
 class CustomCard extends StatefulWidget {
   //final ValueChanged<String>? onNameChanged; // Callback opcional para capturar o valor digitado
@@ -18,6 +19,8 @@ class CustomCard extends StatefulWidget {
   final int circleSize;
   final int iconSize;
   final Color logoCircleColor;
+  final File? logo;
+  final double logoSize;
 
 
   const CustomCard({
@@ -38,6 +41,8 @@ class CustomCard extends StatefulWidget {
     required this.logoCircleColor,
     required this.circleSize,
     required this.iconSize,
+    required this.logo,
+    required this.logoSize,
   });
 
     @override
@@ -76,44 +81,6 @@ class _CustomCardState extends State<CustomCard> {
       child: Stack(
         children: [
           
-          // Texto acima e abaixo dos círculos
-          Padding(
-            padding: const EdgeInsets.all(10),
-            child: Stack(
-              children: [
-                Container(
-                  width: double.infinity,
-                  alignment: Alignment.topCenter,
-                  child: Text(
-                    widget.upperText, // 56 Caracteres Texto que será exibido
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: widget.upperTextColor, // Cor do texto superior
-                    ),
-                    softWrap: false, // Impede que o texto quebre para a próxima linha
-                    overflow: TextOverflow.fade, // Permite que o texto continue além dos limites
-                  ),
-                ),
-                // Texto Abaixo dos círculos
-                Container(
-                  width: double.infinity,
-                  alignment: Alignment.bottomCenter,
-                  child: Text(
-                    widget.lowerText, // 56 Caracteres Texto que será exibido
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: widget.lowerTextColor, // Cor do texto inferior
-                    ),
-                    softWrap: false, // Impede que o texto quebre para a próxima linha
-                    overflow: TextOverflow.fade, // Permite que o texto continue além dos limites
-                  ),
-                ),
-              ],
-            ),
-          ),
-          
           // Círculo branco à esquerda
           Padding(
             padding: const EdgeInsets.only(right:250),
@@ -129,6 +96,22 @@ class _CustomCardState extends State<CustomCard> {
               ),
             ),
           ),
+
+          //Logo
+          if (widget.logo != null)
+          Padding(
+            padding: const EdgeInsets.only(right:250),
+            child: Align (
+              alignment: Alignment.center, // Alinha horizontalmente à esquerda e verticalmente ao centro
+              child: Image.file(
+                widget.logo!,
+                height: widget.logoSize,
+                width: widget.logoSize,
+                fit: BoxFit.cover,
+              ), // Exibe a imagem recebida                
+            ),
+          ),
+
 
           Container(
             margin: const EdgeInsets.only(left: 96, right: 12, top:33),
@@ -167,6 +150,45 @@ class _CustomCardState extends State<CustomCard> {
                     stampCount: widget.stampCount,
                     stampIcon: widget.stampIcon,
                     stampColor: widget.stampColor,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // Texto acima e abaixo dos círculos
+          Padding(
+            padding: const EdgeInsets.all(10),
+            child: Stack(
+              children: [
+                // Texto Acima dos círculos
+                Container(
+                  width: double.infinity,
+                  alignment: Alignment.topCenter,
+                  child: Text(
+                    widget.upperText, // 56 Caracteres Texto que será exibido
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: widget.upperTextColor, // Cor do texto superior
+                    ),
+                    softWrap: false, // Impede que o texto quebre para a próxima linha
+                    overflow: TextOverflow.fade, // Permite que o texto continue além dos limites
+                  ),
+                ),
+                // Texto Abaixo dos círculos
+                Container(
+                  width: double.infinity,
+                  alignment: Alignment.bottomCenter,
+                  child: Text(
+                    widget.lowerText, // 56 Caracteres Texto que será exibido
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: widget.lowerTextColor, // Cor do texto inferior
+                    ),
+                    softWrap: false, // Impede que o texto quebre para a próxima linha
+                    overflow: TextOverflow.fade, // Permite que o texto continue além dos limites
                   ),
                 ),
               ],
