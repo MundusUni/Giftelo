@@ -86,6 +86,7 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
           //TextButton(onPressed: () {}, child: const Text('Save'))
           ElevatedButton(
             onPressed: () async {
+
               final dbHelper = DatabaseLayout();
               // Obtém o caminho completo do banco de dados e imprime no console
               final dbPath = await getDatabasesPath();
@@ -100,51 +101,78 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
               // Verifica se o layout já existe no banco de dados
               final existingLayout = await dbHelper.getLayoutByName(widget.nameLayout);
 
-              if (existingLayout != null) {
-                // Atualiza o layout existente
-                await dbHelper.updateLayout(
-                  nameLayout: widget.nameLayout,
-                  upperText: widget.upperText,
-                  lowerText: widget.lowerText,
-                  exampleText: widget.exampleText,
-                  upperTextColor: widget.upperTextColor.value,
-                  lowerTextColor: widget.lowerTextColor.value,
-                  cardColor: widget.cardColor.value,
-                  logoCircleColor: widget.logoCircleColor.value,
-                  circleColor: widget.circleColor.value,
-                  stampColor: widget.stampColor.value,
-                  stampIcon: widget.stampIcon.codePoint,
-                  stampBackground: widget.stampBackground.codePoint,
-                  numberOfCircles: widget.numberOfCircles,
-                  logoCircleSize: widget.logoCircleSize,
-                  logo: logoBytes != null ? Uint8List.fromList(logoBytes) : null,
-                  logoSize: widget.logoSize,
+              // Se estiver vazio, exibe a Popup com o erro
+              if (widget.nameLayout.trim().isEmpty) {  
+                showDialog(
+                  context: context, // Passa o contexto para o showDialog
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text('Erro'),
+                      content: Text('O nome do layout não pode ser vazio.'),
+                      actions: <Widget>[
+                        TextButton(
+                          child: Text('OK'),
+                          onPressed: () {
+                            Navigator.of(context).pop(); // Fecha a popup
+                          },
+                        ),
+                      ],
+                    );
+                  },
                 );
-                print('Layout atualizado com sucesso!');
-                Navigator.pop(context); // Fecha a tela atual após salvar
+                return;  // Impede a execução do restante da lógica de inserção
               } else {
-                // Insere um novo layout
-                await dbHelper.insertLayout(
-                  nameLayout: widget.nameLayout,
-                  upperText: widget.upperText,
-                  lowerText: widget.lowerText,
-                  exampleText: widget.exampleText,
-                  upperTextColor: widget.upperTextColor.value,
-                  lowerTextColor: widget.lowerTextColor.value,
-                  cardColor: widget.cardColor.value,
-                  logoCircleColor: widget.logoCircleColor.value,
-                  circleColor: widget.circleColor.value,
-                  stampColor: widget.stampColor.value,
-                  stampIcon: widget.stampIcon.codePoint,
-                  stampBackground: widget.stampBackground.codePoint,
-                  numberOfCircles: widget.numberOfCircles,
-                  logoCircleSize: widget.logoCircleSize,
-                  logo: logoBytes != null ? Uint8List.fromList(logoBytes) : null,
-                  logoSize: widget.logoSize,
-                );
-                print('Novo layout salvo com sucesso!');
-                Navigator.pop(context); // Fecha a tela atual após salvar
+
+                // Se o Nome não estiver vazio, continua com o Save
+                if (existingLayout != null) {
+                  // Atualiza o layout existente
+                  await dbHelper.updateLayout(
+                    nameLayout: widget.nameLayout,
+                    upperText: widget.upperText,
+                    lowerText: widget.lowerText,
+                    exampleText: widget.exampleText,
+                    upperTextColor: widget.upperTextColor.value,
+                    lowerTextColor: widget.lowerTextColor.value,
+                    cardColor: widget.cardColor.value,
+                    logoCircleColor: widget.logoCircleColor.value,
+                    circleColor: widget.circleColor.value,
+                    stampColor: widget.stampColor.value,
+                    stampIcon: widget.stampIcon.codePoint,
+                    stampBackground: widget.stampBackground.codePoint,
+                    numberOfCircles: widget.numberOfCircles,
+                    logoCircleSize: widget.logoCircleSize,
+                    logo: logoBytes != null ? Uint8List.fromList(logoBytes) : null,
+                    logoSize: widget.logoSize,
+                  );
+                  print('Layout atualizado com sucesso!');
+                  Navigator.pop(context); // Fecha a tela atual após salvar
+                } else {
+                  // Insere um novo layout
+                  await dbHelper.insertLayout(
+                    nameLayout: widget.nameLayout,
+                    upperText: widget.upperText,
+                    lowerText: widget.lowerText,
+                    exampleText: widget.exampleText,
+                    upperTextColor: widget.upperTextColor.value,
+                    lowerTextColor: widget.lowerTextColor.value,
+                    cardColor: widget.cardColor.value,
+                    logoCircleColor: widget.logoCircleColor.value,
+                    circleColor: widget.circleColor.value,
+                    stampColor: widget.stampColor.value,
+                    stampIcon: widget.stampIcon.codePoint,
+                    stampBackground: widget.stampBackground.codePoint,
+                    numberOfCircles: widget.numberOfCircles,
+                    logoCircleSize: widget.logoCircleSize,
+                    logo: logoBytes != null ? Uint8List.fromList(logoBytes) : null,
+                    logoSize: widget.logoSize,
+                  );
+                  print('Novo layout salvo com sucesso!');
+                  Navigator.pop(context); // Fecha a tela atual após salvar
+                }
               }
+
+
+
             },
             child: const Text('Save'),
           ),
