@@ -125,15 +125,4 @@ class _StampBackgroundSelectorState extends State<StampBackgroundSelector> {
       },
     );
   }
-
-  // Método para criar uma opção no popup
-  Widget _popupOption(IconData icon, String label) {
-    return ListTile(
-      leading: _buildIcon(icon), // Ícone que representa a opção
-      title: Text(label),
-      onTap: () {
-        Navigator.pop(context, icon); // Retorna o ícone selecionado
-      },
-    );
-  }
 }
