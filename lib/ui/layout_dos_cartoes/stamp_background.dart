@@ -27,7 +27,7 @@ class _StampBackgroundSelectorState extends State<StampBackgroundSelector> {
   @override
   void initState() {
     super.initState();
-    currentIcon = IconData(0xe163, fontFamily: 'MaterialIcons'); // Ícone padrão (Círculo)
+    currentIcon = widget.stampBackground; // Ícone padrão (Círculo)
   }
 
   // Método para exibir o ícone correspondente

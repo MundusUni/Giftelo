@@ -36,7 +36,7 @@ class _LayoutStartState extends State<LayoutStart> {
           children: [
 
             //Botão para resetar banco de dados
-            /*
+            
             ElevatedButton(
               onPressed: () async {
                 await DatabaseLayout().resetLayoutDatabase();
@@ -44,7 +44,7 @@ class _LayoutStartState extends State<LayoutStart> {
               },
               child: const Text('Resetar Banco de Dados'),
             ),
-            */
+            
 
             //Botão de Novo
             ElevatedButton(
@@ -63,6 +63,7 @@ class _LayoutStartState extends State<LayoutStart> {
                       stampColor: Color(int.tryParse(defaultValues['stamp_color']?.toString() ?? '0xFF000000') ?? 0xFF000000),
                       cardColor: Color(int.tryParse(defaultValues['card_color']?.toString() ?? '0xFF00008B') ?? 0xFF00008B),
                       stampIcon: IconData((defaultValues['stamp_icon'] is num) ? (defaultValues['stamp_icon'] as num).toInt() : 0xe3a0, fontFamily: 'MaterialIcons',),
+                      stampBackground: IconData((defaultValues['stamp_background'] is num) ? (defaultValues['stamp_background'] as num).toInt() : 0xe3a0, fontFamily: 'MaterialIcons',),
                       circleColor: Color(int.tryParse(defaultValues['circle_color']?.toString() ?? '0xFFFFFFFF') ?? 0xFFFFFFFF),
                       upperTextColor: Color(int.tryParse(defaultValues['upper_text_color']?.toString() ?? '0xFF000000') ?? 0xFF000000),
                       lowerTextColor: Color(int.tryParse(defaultValues['lower_text_color']?.toString() ?? '0xFF000000') ?? 0xFF000000),
@@ -72,8 +73,8 @@ class _LayoutStartState extends State<LayoutStart> {
                       logoCircleSize: (defaultValues['logo_circle_size'] == null || defaultValues['logo_circle_size'] == 0) ? 50 : (defaultValues['logo_circle_size'] as num).toInt(),
                       logoCircleColor: Color(int.tryParse(defaultValues['logo_circle_color']?.toString() ?? '0xFFFFFFFF') ?? 0xFFFFFFFF),
                       nameLayout: defaultValues['name_layout']?.toString() ?? 'Novo Layout', // Adicione esta linha
-                      logo: defaultValues['logo'], // Adicione esta linha
                       logoSize: (defaultValues['logo_size'] == null || defaultValues['logo_size'] == 0) ? 50 : (defaultValues['logo_size'] as num).toInt(),
+                      logo: defaultValues['logo'], // Adicione esta linha
                     ),
                   ),
                 );
@@ -116,6 +117,7 @@ class _LayoutStartState extends State<LayoutStart> {
                                     'stamp_color': 'int',
                                     'card_color': 'int',
                                     'stamp_icon': 'int',
+                                    'stamp_background': 'int',
                                     'circle_color': 'int',
                                     'upper_text_color': 'int',
                                     'lower_text_color': 'int',
@@ -147,7 +149,8 @@ class _LayoutStartState extends State<LayoutStart> {
                                       numberOfCircles: (layout[index]['number_of_circles'] == null)? 1: int.tryParse(layout[index]['number_of_circles'].toString()) ?? 1,
                                       stampColor: Color(layout[index]['stamp_color']),
                                       cardColor: Color(layout[index]['card_color']),
-                                      stampIcon: IconData((defaultValues['stamp_icon'] == null)? 0xE5CA: (defaultValues['stamp_icon'] as num).toInt(),fontFamily: 'MaterialIcons',),
+                                      stampIcon: IconData(layout[index]['stamp_icon'] == null ? 0xE5CA : (layout[index]['stamp_icon'] as num).toInt(),fontFamily: 'MaterialIcons',),
+                                      stampBackground: IconData(layout[index]['stamp_background'] == null ? 0xE5CA : (layout[index]['stamp_background'] as num).toInt(),fontFamily: 'MaterialIcons',),
                                       circleColor: Color(layout[index]['circle_color']),
                                       upperTextColor: Color(layout[index]['upper_text_color']),
                                       lowerTextColor: Color(layout[index]['lower_text_color']),

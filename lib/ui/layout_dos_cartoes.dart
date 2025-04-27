@@ -49,6 +49,7 @@ class LayoutDosCartoes extends StatefulWidget {
     required this.stampColor,
     required this.cardColor,
     required this.stampIcon,
+    required this.stampBackground,
     required this.circleColor,
     required this.upperTextColor,
     required this.lowerTextColor,
@@ -113,12 +114,14 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
                   circleColor: widget.circleColor.value,
                   stampColor: widget.stampColor.value,
                   stampIcon: widget.stampIcon.codePoint,
+                  stampBackground: widget.stampBackground.codePoint,
                   numberOfCircles: widget.numberOfCircles,
                   logoCircleSize: widget.logoCircleSize,
                   logo: logoBytes != null ? Uint8List.fromList(logoBytes) : null,
                   logoSize: widget.logoSize,
                 );
                 print('Layout atualizado com sucesso!');
+                Navigator.pop(context); // Fecha a tela atual após salvar
               } else {
                 // Insere um novo layout
                 await dbHelper.insertLayout(
@@ -133,12 +136,14 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
                   circleColor: widget.circleColor.value,
                   stampColor: widget.stampColor.value,
                   stampIcon: widget.stampIcon.codePoint,
+                  stampBackground: widget.stampBackground.codePoint,
                   numberOfCircles: widget.numberOfCircles,
                   logoCircleSize: widget.logoCircleSize,
                   logo: logoBytes != null ? Uint8List.fromList(logoBytes) : null,
                   logoSize: widget.logoSize,
                 );
                 print('Novo layout salvo com sucesso!');
+                Navigator.pop(context); // Fecha a tela atual após salvar
               }
             },
             child: const Text('Save'),
@@ -183,7 +188,7 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
                     
                     LabeledTextInput(
                       labelText: 'Nome do Layout:',
-                      exampleText:'',
+                      exampleText:widget.nameLayout,
                       onNameChanged: (value) {
                         setState(() {
                           widget.nameLayout = value; // Atualiza o estado com o texto digitado
@@ -195,7 +200,7 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
 
                     LabeledTextInput(
                       labelText: 'Mensagem Superior:',
-                      exampleText:'',
+                      exampleText:widget.upperText,
                       onNameChanged: (value) {
                         setState(() {
                           widget.upperText = value; // Atualiza o estado com o texto digitado
@@ -207,7 +212,7 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
 
                     LabeledTextInput(
                       labelText: 'Mensagem Inferior',
-                      exampleText:'',
+                      exampleText:widget.lowerText,
                       onNameChanged: (value) {
                         setState(() {
                           widget.lowerText = value; // Atualiza o estado com o texto digitado

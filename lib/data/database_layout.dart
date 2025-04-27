@@ -95,10 +95,11 @@ Future<void> resetLayoutDatabase() async {
             logo_circle_color INTEGER DEFAULT 4294967295,
             circle_color INTEGER DEFAULT 4294967295,
             stamp_color INTEGER DEFAULT 4294967040,
-            stamp_icon INTEGER DEFAULT 58826, 
+            stamp_icon INTEGER DEFAULT 58272, 
+            stamp_background INTEGER DEFAULT 57699,
             logo BLOB,
-            number_of_circles INTEGER DEFAULT 1
-            logo_size INTEGER DEFAULT 0,
+            number_of_circles INTEGER DEFAULT 1,
+            logo_size INTEGER DEFAULT 0
           )
         ''');
       },
@@ -171,6 +172,7 @@ Future<void> resetLayoutDatabase() async {
     required int circleColor,
     required int stampColor,
     required int stampIcon,
+    required int stampBackground,
     required int numberOfCircles,
     required int logoCircleSize,
     required Uint8List? logo,
@@ -190,6 +192,7 @@ Future<void> resetLayoutDatabase() async {
         'circle_color': circleColor,
         'stamp_color': stampColor,
         'stamp_icon': stampIcon,
+        'stamp_background': stampBackground,
         'number_of_circles': numberOfCircles,
         'logo_circle_size': logoCircleSize,
         'logo': logo,
@@ -212,6 +215,7 @@ Future<void> resetLayoutDatabase() async {
     required int circleColor,
     required int stampColor,
     required int stampIcon,
+    required int stampBackground,
     required int numberOfCircles,
     required int logoCircleSize,
     required Uint8List? logo,
@@ -232,6 +236,7 @@ Future<void> resetLayoutDatabase() async {
         'circle_color': circleColor,
         'stamp_color': stampColor,
         'stamp_icon': stampIcon,
+        'stamp_background': stampBackground,
         'number_of_circles': numberOfCircles,
         'logo_circle_size': logoCircleSize,
         'logo': logo,
@@ -289,9 +294,10 @@ Future<void> resetLayoutDatabase() async {
         'circle_color': layout['circle_color'], // cor dos círculos atrás dos stamps
         'stamp_color': layout['stamp_color'], // cor dos stamps
         'stamp_icon': layout['stamp_icon'], // ícone utilizado como stamp
+        'stamp_background': layout['stamp_background'], // fundo do stamp
         'number_of_circles': layout['number_of_circles'], // número de círculos atrás dos stamps
         'logo': layout['logo'], // imagem da logo do cliente
-        'logo size': layout['logo_size'], // tamanho da logo do cliente
+        'logo_size': layout['logo_size'], // tamanho da logo do cliente
       };
     }).toList();
   }
