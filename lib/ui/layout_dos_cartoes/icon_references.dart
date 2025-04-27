@@ -454,7 +454,7 @@ final List<Map<String, dynamic>> stampBackgroundIconsMap = [
   {'icon': IconData(0xe596, fontFamily: 'MaterialIcons'), 'label': 'Escudo'},
   {'icon': IconData(0xe0f1, fontFamily: 'MaterialIcons'), 'label': 'Marcador'},
   {'icon': IconData(0xe5f9, fontFamily: 'MaterialIcons'), 'label': 'Estrela'},
-  {'icon': IconData(0xf07b5, fontFamily: 'MaterialIcons'), 'label': 'Noise Aware'},
+  //{'icon': IconData(0xf07b5, fontFamily: 'MaterialIcons'), 'label': 'Noise Aware'},
   {'icon': IconData(0xf0518, fontFamily: 'MaterialIcons'), 'label': 'Hive'},
   {'icon': IconData(0xe109, fontFamily: 'MaterialIcons'), 'label': 'Brightness 5'},
 

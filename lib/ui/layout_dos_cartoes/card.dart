@@ -125,33 +125,61 @@ class _CustomCardState extends State<CustomCard> {
               children: [
                 // GridView para os círculos
                 GridView.builder(
-                  physics: const NeverScrollableScrollPhysics(), // Desativa o scroll
+                  physics: const NeverScrollableScrollPhysics(),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 6, // 6 círculos por linha
-                    crossAxisSpacing: 10, // Espaçamento horizontal entre os círculos
-                    mainAxisSpacing: 10, // Espaçamento vertical entre as linhas
+                    crossAxisCount: 6,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
                   ),
-                  itemCount: widget.numberOfCircles, // Número total de círculos
+                  itemCount: widget.numberOfCircles,
                   itemBuilder: (context, index) {
-                    return Center(
-                      child: Icon(
-                        widget.stampBackground, // Ícone do círculo
-                        size: widget.circleSize.toDouble(), // Tamanho do ícone
-                        color: widget.circleColor, // Cor do círculo
-                      ),
+                    bool showStamp = index < widget.stampCount;
+                    
+                    return LayoutBuilder(
+                      builder: (context, constraints) {
+                        final cellWidth = constraints.maxWidth;
+                        final cellHeight = constraints.maxHeight;
+                        
+                        return SizedBox(
+                          width: cellWidth,
+                          height: cellHeight,
+                          child: Stack(
+                            clipBehavior: Clip.none,
+                            fit: StackFit.expand,
+                            children: [
+                              // Círculo de fundo absolutamente centralizado
+                              Positioned(
+                                left: cellWidth / 2 - widget.circleSize / 2,
+                                top: cellHeight / 2 - widget.circleSize / 2,
+                                width: widget.circleSize.toDouble(),
+                                height: widget.circleSize.toDouble(),
+                                child: Icon(
+                                  widget.stampBackground,
+                                  size: widget.circleSize.toDouble(),
+                                  color: widget.circleColor,
+                                ),
+                              ),
+                              
+                              // Carimbo absolutamente centralizado
+                              if (showStamp)
+                                Positioned(
+                                  left: cellWidth / 2 - widget.iconSize / 2,
+                                  top: cellHeight / 2 - widget.iconSize / 2,
+                                  width: widget.iconSize.toDouble(),
+                                  height: widget.iconSize.toDouble(),
+                                  child: Icon(
+                                    widget.stampIcon,
+                                    size: widget.iconSize.toDouble(),
+                                    color: widget.stampColor,
+                                  ),
+                                ),
+                            ],
+                          ),
+                        );
+                      },
                     );
                   },
-                ),
-                // Ícones de pizza sobrepostos aos círculos
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: Stamp(
-                    iconSize: widget.iconSize,
-                    stampCount: widget.stampCount,
-                    stampIcon: widget.stampIcon,
-                    stampColor: widget.stampColor,
-                  ),
-                ),
+                )
               ],
             ),
           ),

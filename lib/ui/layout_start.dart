@@ -36,7 +36,7 @@ class _LayoutStartState extends State<LayoutStart> {
           children: [
 
             //Botão para resetar banco de dados
-            
+            /*
             ElevatedButton(
               onPressed: () async {
                 await DatabaseLayout().resetLayoutDatabase();
@@ -44,7 +44,7 @@ class _LayoutStartState extends State<LayoutStart> {
               },
               child: const Text('Resetar Banco de Dados'),
             ),
-            
+            */
 
             //Botão de Novo
             ElevatedButton(
@@ -107,6 +107,7 @@ class _LayoutStartState extends State<LayoutStart> {
                               onTap: () {
                                 Navigator.pop(context); // Fecha o diálogo
 
+                                /*
                                 /////Um Graaaande print que exibe os detalhes das variáveis retornadas
                                 print('Detalhes das variáveis:');
                                 layout[index].forEach((key, value) {
@@ -139,7 +140,7 @@ class _LayoutStartState extends State<LayoutStart> {
                                 // Aqui você pode adicionar lógica para carregar o layout selecionado
                                 print('Layout selecionado: ${layout[index]['name_layout']}');
                                 /////
-
+                                */
 
                                 Navigator.push(
                                   context,

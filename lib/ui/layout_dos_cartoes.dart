@@ -84,98 +84,8 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
             : 'Novo Layout'),
         actions: [
           //TextButton(onPressed: () {}, child: const Text('Save'))
-          ElevatedButton(
-            onPressed: () async {
-
-              final dbHelper = DatabaseLayout();
-              // Obtém o caminho completo do banco de dados e imprime no console
-              final dbPath = await getDatabasesPath();
-              print('Banco de dados em uso: ${join(dbPath, 'layouts.db')}');
-
-              // Converte a imagem de logo para bytes
-              List<int>? logoBytes;
-              if (widget.logo != null) {
-                logoBytes = await convertImageToBytes(widget.logo!);
-              }
-
-              // Verifica se o layout já existe no banco de dados
-              final existingLayout = await dbHelper.getLayoutByName(widget.nameLayout);
-
-              // Se estiver vazio, exibe a Popup com o erro
-              if (widget.nameLayout.trim().isEmpty) {  
-                showDialog(
-                  context: context, // Passa o contexto para o showDialog
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: Text('Erro'),
-                      content: Text('O nome do layout não pode ser vazio.'),
-                      actions: <Widget>[
-                        TextButton(
-                          child: Text('OK'),
-                          onPressed: () {
-                            Navigator.of(context).pop(); // Fecha a popup
-                          },
-                        ),
-                      ],
-                    );
-                  },
-                );
-                return;  // Impede a execução do restante da lógica de inserção
-              } else {
-
-                // Se o Nome não estiver vazio, continua com o Save
-                if (existingLayout != null) {
-                  // Atualiza o layout existente
-                  await dbHelper.updateLayout(
-                    nameLayout: widget.nameLayout,
-                    upperText: widget.upperText,
-                    lowerText: widget.lowerText,
-                    exampleText: widget.exampleText,
-                    upperTextColor: widget.upperTextColor.value,
-                    lowerTextColor: widget.lowerTextColor.value,
-                    cardColor: widget.cardColor.value,
-                    logoCircleColor: widget.logoCircleColor.value,
-                    circleColor: widget.circleColor.value,
-                    stampColor: widget.stampColor.value,
-                    stampIcon: widget.stampIcon.codePoint,
-                    stampBackground: widget.stampBackground.codePoint,
-                    numberOfCircles: widget.numberOfCircles,
-                    logoCircleSize: widget.logoCircleSize,
-                    logo: logoBytes != null ? Uint8List.fromList(logoBytes) : null,
-                    logoSize: widget.logoSize,
-                  );
-                  print('Layout atualizado com sucesso!');
-                  Navigator.pop(context); // Fecha a tela atual após salvar
-                } else {
-                  // Insere um novo layout
-                  await dbHelper.insertLayout(
-                    nameLayout: widget.nameLayout,
-                    upperText: widget.upperText,
-                    lowerText: widget.lowerText,
-                    exampleText: widget.exampleText,
-                    upperTextColor: widget.upperTextColor.value,
-                    lowerTextColor: widget.lowerTextColor.value,
-                    cardColor: widget.cardColor.value,
-                    logoCircleColor: widget.logoCircleColor.value,
-                    circleColor: widget.circleColor.value,
-                    stampColor: widget.stampColor.value,
-                    stampIcon: widget.stampIcon.codePoint,
-                    stampBackground: widget.stampBackground.codePoint,
-                    numberOfCircles: widget.numberOfCircles,
-                    logoCircleSize: widget.logoCircleSize,
-                    logo: logoBytes != null ? Uint8List.fromList(logoBytes) : null,
-                    logoSize: widget.logoSize,
-                  );
-                  print('Novo layout salvo com sucesso!');
-                  Navigator.pop(context); // Fecha a tela atual após salvar
-                }
-              }
-
-
-
-            },
-            child: const Text('Save'),
-          ),
+          
+          //Aqui ficava o Save antes
       
         ],
       ),
@@ -317,7 +227,7 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
                         });
                       },
                       slideText: 'Tamanho do Background da Logo:',
-                      maxSize: 70.0,
+                      maxSize: 60.0,
                     ),
 
                     const Divider(), // Linha divisória
@@ -401,7 +311,7 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
                         });
                       },
                       slideText: 'Tamanho do Carimbo:',
-                      maxSize: 35.0,
+                      maxSize: 50.0,
                     ),
 
                     const Divider(),
@@ -413,7 +323,7 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
                         });
                       },
                       slideText: 'Tamanho do objeto atrás do Carimbo:',
-                      maxSize: 50.0,
+                      maxSize: 43.0,
                     ),
 
                     const Divider(),
@@ -438,6 +348,207 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
                       maxSize: 70.0,
                     ),
 
+                    const Divider(),
+
+                    SizedBox(height: 20), // Espaço entre os botões
+
+
+                    // Botão de salvar
+                    SizedBox (
+                      width: 200.0,  // Define a largura fixa do botão
+                      child: ElevatedButton(
+                        onPressed: () async {
+
+                          final dbHelper = DatabaseLayout();
+                          // Obtém o caminho completo do banco de dados e imprime no console
+                          final dbPath = await getDatabasesPath();
+                          print('Banco de dados em uso: ${join(dbPath, 'layouts.db')}');
+
+                          // Converte a imagem de logo para bytes
+                          List<int>? logoBytes;
+                          if (widget.logo != null) {
+                            logoBytes = await convertImageToBytes(widget.logo!);
+                          }
+
+                          // Verifica se o layout já existe no banco de dados
+                          final existingLayout = await dbHelper.getLayoutByName(widget.nameLayout);
+
+                          // Se estiver vazio, exibe a Popup com o erro
+                          if (widget.nameLayout.trim().isEmpty) {  
+                            showDialog(
+                              context: context, // Passa o contexto para o showDialog
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text('Erro'),
+                                  content: Text('O nome do layout não pode ser vazio.'),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      child: Text('OK'),
+                                      onPressed: () {
+                                        Navigator.of(context).pop(); // Fecha a popup
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                            return;  // Impede a execução do restante da lógica de inserção
+                          } else {
+                            // Se o Nome não estiver vazio, continua com o Save
+                            if (existingLayout != null) {
+                              // Atualiza o layout existente
+                              await dbHelper.updateLayout(
+                                nameLayout: widget.nameLayout,
+                                upperText: widget.upperText,
+                                lowerText: widget.lowerText,
+                                exampleText: widget.exampleText,
+                                upperTextColor: widget.upperTextColor.value,
+                                lowerTextColor: widget.lowerTextColor.value,
+                                cardColor: widget.cardColor.value,
+                                logoCircleColor: widget.logoCircleColor.value,
+                                circleColor: widget.circleColor.value,
+                                stampColor: widget.stampColor.value,
+                                stampIcon: widget.stampIcon.codePoint,
+                                stampBackground: widget.stampBackground.codePoint,
+                                numberOfCircles: widget.numberOfCircles,
+                                logoCircleSize: widget.logoCircleSize,
+                                logo: logoBytes != null ? Uint8List.fromList(logoBytes) : null,
+                                logoSize: widget.logoSize,
+                              );
+                              print('Layout atualizado com sucesso!');
+                              Navigator.pop(context); // Fecha a tela atual após salvar
+                            } else {
+                              // Insere um novo layout
+                              await dbHelper.insertLayout(
+                                nameLayout: widget.nameLayout,
+                                upperText: widget.upperText,
+                                lowerText: widget.lowerText,
+                                exampleText: widget.exampleText,
+                                upperTextColor: widget.upperTextColor.value,
+                                lowerTextColor: widget.lowerTextColor.value,
+                                cardColor: widget.cardColor.value,
+                                logoCircleColor: widget.logoCircleColor.value,
+                                circleColor: widget.circleColor.value,
+                                stampColor: widget.stampColor.value,
+                                stampIcon: widget.stampIcon.codePoint,
+                                stampBackground: widget.stampBackground.codePoint,
+                                numberOfCircles: widget.numberOfCircles,
+                                logoCircleSize: widget.logoCircleSize,
+                                logo: logoBytes != null ? Uint8List.fromList(logoBytes) : null,
+                                logoSize: widget.logoSize,
+                              );
+                              print('Novo layout salvo com sucesso!');
+                              Navigator.pop(context); // Fecha a tela atual após salvar
+                            }
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green, // Cor de fundo do botão
+                          foregroundColor: Colors.white, // Cor do texto do botão
+                        ),
+                        child: const Text('Salvar'),
+                      ),
+                    ),
+
+                    // Botão de deletar
+                    SizedBox(
+                      width: 200.0,  // Define a largura fixa do botão
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          // Cria uma instância do DatabaseLayout
+                        final dbHelper = DatabaseLayout();
+
+                          // Verifica se o layout existe antes de tentar deletá-lo
+                          final existingLayout = await dbHelper.getLayoutByName(widget.nameLayout);
+
+                          if (existingLayout == null) {
+                            // Exibe um alerta caso o layout não exista
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text('Erro'),
+                                  content: Text('Layout não encontrado. Não foi possível deletar.'),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      child: Text('OK'),
+                                      onPressed: () {
+                                        Navigator.of(context).pop(); // Fecha a popup
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          } else {
+                            // Confirma a exclusão
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Align(
+                                    alignment: Alignment.center,
+                                    child: Text('Confirmar Exclusão'),
+                                  ),
+                                  content: Text('Tem certeza que deseja excluir este layout?'),
+                                  actions: <Widget>[
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: <Widget> [
+                                        TextButton(
+                                          child: Text('Cancelar'),
+                                          onPressed: () {
+                                            Navigator.of(context).pop(); // Fecha a popup
+                                          },
+                                        ),
+                                        TextButton(
+                                          child: Text('Deletar'),
+                                          onPressed: () async {
+                                            // Exclui o layout do banco de dados
+                                            await dbHelper.deleteLayout(existingLayout['id']);
+
+                                            // Fecha a tela atual após a exclusão
+                                            Navigator.pop(context); // Fecha a popup de confirmação
+                                            Navigator.pop(context); // Fecha a tela atual após deletar
+
+                                            // Opcional: Exibe um alerta de sucesso
+                                            /*
+                                            showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                  title: Text('Sucesso'),
+                                                  content: Text('Layout deletado com sucesso!'),
+                                                  actions: <Widget>[
+                                                    TextButton(
+                                                      child: Text('OK'),
+                                                      onPressed: () {
+                                                        Navigator.of(context).pop(); // Fecha a popup
+                                                      },
+                                                    ),
+                                                  ],
+                                                );
+                                              },
+                                            );
+                                            */
+
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red, // Cor de fundo do botão
+                          foregroundColor: Colors.white, // Cor do texto do botão
+                        ),
+                        child: Text('Deletar'),
+                      ),
+                    )
 
 
                   ],

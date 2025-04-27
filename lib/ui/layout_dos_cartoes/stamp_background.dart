@@ -73,43 +73,54 @@ class _StampBackgroundSelectorState extends State<StampBackgroundSelector> {
           context: context,
           builder: (context) => AlertDialog(
             title: const Text('Selecione o Ícone'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Conteúdo rolável
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: widget.iconOptions.map((option) {
-                        return _popupOption(
-                          option['icon'] as IconData, // Ícone
-                          option['label'] as String, // Rótulo
+            content: SizedBox(
+              width: double.maxFinite, // Garante que a Grid ocupe o espaço
+              child: Column(
+                mainAxisSize: MainAxisSize.min, // Ajusta o tamanho do popup
+                children: [ 
+                  Flexible(
+                    child: GridView.builder(
+                      shrinkWrap: true,
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 5, // Número de colunas (pode ajustar)
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 10,
+                      ),
+                      itemCount: widget.iconOptions.length,
+                      itemBuilder: (context, index) {
+                        final option = widget.iconOptions[index];
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.pop(context, option['icon'] as IconData);
+                          },
+                          child: Icon(
+                            option['icon'] as IconData,
+                            size: 30,
+                            color: Colors.black,
+                          ),
                         );
-                      }).toList(),
+                      },
+                    )
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.only(top: 8.0),
+                    child: Icon(
+                      Icons.arrow_downward,
+                      size: 24,
+                      color: Colors.grey,
                     ),
                   ),
-                ),
-                // Indicador visual no final
-                const Padding(
-                  padding: EdgeInsets.only(top: 8.0),
-                  child: Icon(
-                    Icons.arrow_downward, // Ícone de seta para cima
-                    size: 24,
-                    color: Colors.grey,
-                  ),
-                ),
-              ],
+                ],  
+              ),
             ),
           ),
         );
 
-        // Atualiza o ícone selecionado
         if (selectedIcon != null) {
           setState(() {
             currentIcon = selectedIcon;
           });
-          widget.onShapeChanged(selectedIcon); // Notifica o widget pai
+          widget.onShapeChanged(selectedIcon);
         }
       },
     );
