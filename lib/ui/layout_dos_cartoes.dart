@@ -37,7 +37,6 @@ class LayoutDosCartoes extends StatefulWidget {
   Color logoCircleColor = Colors.yellow; // Cor do círculo da Logo
   double colorPosition = 1.0;
   String nameLayout ='Novo Layout';
-  File? logo; // Variável para armazenar a imagem carregada
   int logoSize;
 
   LayoutDosCartoes({
@@ -59,7 +58,6 @@ class LayoutDosCartoes extends StatefulWidget {
     required this.logoCircleSize,
     required this.logoCircleColor,
     required this.nameLayout,
-    required this.logo,
     required this.logoSize,
   });
 
@@ -111,7 +109,6 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
               logoCircleColor: widget.logoCircleColor,
               iconSize: widget.iconSize,
               circleSize: widget.circleSize,
-              logo: widget.logo,
               logoSize: widget.logoSize.toDouble(),
             ),
 
@@ -328,6 +325,7 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
 
                     const Divider(),
                     
+                    /*
                     LogoUploader(
                       onLogoSelected: (logo) {
                         setState(() {
@@ -350,6 +348,8 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
 
                     const Divider(),
 
+                    */
+
                     SizedBox(height: 20), // Espaço entre os botões
 
 
@@ -364,11 +364,13 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
                           final dbPath = await getDatabasesPath();
                           print('Banco de dados em uso: ${join(dbPath, 'layouts.db')}');
 
+                          /*
                           // Converte a imagem de logo para bytes
                           List<int>? logoBytes;
                           if (widget.logo != null) {
                             logoBytes = await convertImageToBytes(widget.logo!);
                           }
+                          */
 
                           // Verifica se o layout já existe no banco de dados
                           final existingLayout = await dbHelper.getLayoutByName(widget.nameLayout);
@@ -404,6 +406,7 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
                                 exampleText: widget.exampleText,
                                 upperTextColor: widget.upperTextColor.value,
                                 lowerTextColor: widget.lowerTextColor.value,
+                                logoCircleSize: widget.logoCircleSize,
                                 cardColor: widget.cardColor.value,
                                 logoCircleColor: widget.logoCircleColor.value,
                                 circleColor: widget.circleColor.value,
@@ -411,9 +414,9 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
                                 stampIcon: widget.stampIcon.codePoint,
                                 stampBackground: widget.stampBackground.codePoint,
                                 numberOfCircles: widget.numberOfCircles,
-                                logoCircleSize: widget.logoCircleSize,
-                                logo: logoBytes != null ? Uint8List.fromList(logoBytes) : null,
                                 logoSize: widget.logoSize,
+                                circleSize: widget.circleSize,
+                                iconSize: widget.iconSize,
                               );
                               print('Layout atualizado com sucesso!');
                               Navigator.pop(context); // Fecha a tela atual após salvar
@@ -426,6 +429,7 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
                                 exampleText: widget.exampleText,
                                 upperTextColor: widget.upperTextColor.value,
                                 lowerTextColor: widget.lowerTextColor.value,
+                                logoCircleSize: widget.logoCircleSize,
                                 cardColor: widget.cardColor.value,
                                 logoCircleColor: widget.logoCircleColor.value,
                                 circleColor: widget.circleColor.value,
@@ -433,9 +437,9 @@ class _LayoutDosCartoesState extends State<LayoutDosCartoes> {
                                 stampIcon: widget.stampIcon.codePoint,
                                 stampBackground: widget.stampBackground.codePoint,
                                 numberOfCircles: widget.numberOfCircles,
-                                logoCircleSize: widget.logoCircleSize,
-                                logo: logoBytes != null ? Uint8List.fromList(logoBytes) : null,
                                 logoSize: widget.logoSize,
+                                circleSize: widget.circleSize,
+                                iconSize: widget.iconSize,
                               );
                               print('Novo layout salvo com sucesso!');
                               Navigator.pop(context); // Fecha a tela atual após salvar

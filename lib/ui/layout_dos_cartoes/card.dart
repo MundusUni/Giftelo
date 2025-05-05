@@ -41,7 +41,7 @@ class CustomCard extends StatefulWidget {
     required this.logoCircleColor,
     required this.circleSize,
     required this.iconSize,
-    required this.logo,
+    this.logo,
     required this.logoSize,
   });
 

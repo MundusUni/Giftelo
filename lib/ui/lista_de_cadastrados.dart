@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../data/database_users.dart';
+import './lista_de_cadastrados/image_generator.dart';
+import 'package:flutter/services.dart';
 
 class ListaDeCadastrados extends StatefulWidget {
   const ListaDeCadastrados({Key? key}) : super(key: key);
@@ -60,31 +62,6 @@ class _ListaDeCadastradosState extends State<ListaDeCadastrados> {
     _loadUsers(); // Atualizar a lista após adicionar
   }
 
-
-/*
-  Future<void> _adicionarCliente() async {
-    if (_nomeController.text.isEmpty) return;
-
-    await _dbHelper.addUser(
-      _nomeController.text,
-      _celularController.text,
-      _layoutController.text,
-      int.parse(_usosController.text),
-      int.parse(_maxUsosController.text)
-    );
-
-    _nomeController.clear();
-    _celularController.clear();
-    _layoutController.clear();
-    _usosController.text = '0';
-    _maxUsosController.text = '10';
-
-    Navigator.pop(context);
-    _loadUsers(); // Atualizar a lista após adicionar
-  }
-*/
-
-
   void _mostrarPopupNovoCliente() {
     _nameController.clear();
     _celularController.clear();
@@ -117,6 +94,7 @@ class _ListaDeCadastradosState extends State<ListaDeCadastrados> {
     );
   }
 
+
 void _mostrarPopupEdicao(Map<String, dynamic> usuario) {
   _nameController.text = usuario['name'];
   _celularController.text = usuario['celular'];
@@ -142,31 +120,34 @@ void _mostrarPopupEdicao(Map<String, dynamic> usuario) {
         actions: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween, // Alinha os botões
-              children:[
-                 // Botão Deletar à esquerda
-                TextButton(
-                  onPressed: () { 
-                    _confirmarExclusao(usuario['id']); // Chama a confirmação de exclusão
-                  },
-                  child: const Text('Deletar', style: TextStyle(color: Colors.red)),
-                ),
+            children:[
 
-                // Botão Salvar ao centro
-                ElevatedButton(
-                  onPressed: () {
-                    _salvarEdicao(usuario['id']); // Chama a função para salvar
+                // Botão Deletar à esquerda
+              ElevatedButton(
+                onPressed: () { 
+                  _confirmarExclusao(usuario['id']); // Chama a confirmação de exclusão
+                },
+                child: const Text('Deletar', style: TextStyle(color: Colors.red)),
+              ),
+
+              // Botão Salvar à direita
+              ElevatedButton(
+                onPressed: () {
+                  _salvarEdicao(usuario['id']); // Chama a função para salvar
+                  Navigator.pop(context); // Fecha a popup de edição
+                },
+                child: const Text('Salvar'),
+              ),
+
+              
+              // Botão Adicionar (Aumenta o número de usos)
+              /*
+              TextButton(
+                onPressed: () async {
+                  if (int.parse(_usosController.text) >= int.parse(_maxUsosController.text)) {
                     Navigator.pop(context); // Fecha a popup de edição
-                  },
-                  child: const Text('Salvar'),
-                ),
-
-                // Botão Adicionar (Aumenta o número de usos)
-                TextButton(
-                  onPressed: () async {
-                    if (int.parse(_usosController.text) >= int.parse(_maxUsosController.text)) {
-                      Navigator.pop(context); // Fecha a popup de edição
-                      return; // Impede que a popup seja fechada
-                    }
+                    return; // Impede que a popup seja fechada
+                  }
                   // Atualiza o campo de usos no banco
                   await _dbHelper.updateUser({
                     'id': usuario['id'],
@@ -176,17 +157,94 @@ void _mostrarPopupEdicao(Map<String, dynamic> usuario) {
                     'usos': usuario['usos'] + 1, // Aumenta o valor de 'usos' em 1
                     'max_usos': int.parse(_maxUsosController.text),
                   });
-                  _loadUsers(); // Atualiza a lista de usuários
-                  Navigator.pop(context); // Fecha a popup de edição
+                _loadUsers(); // Atualiza a lista de usuários
+                Navigator.pop(context); // Fecha a popup de edição
                 },
-                child: Text('Adicionar', style: TextStyle(color: Colors.green)),
-                ),
-              ],
+              child: Text('Adicionar', style: TextStyle(color: Colors.green)),
+              ),
+              */
+            ],
           )
         ],
       );
     },
   );
+}
+
+
+void _mostrarPopupEnviar(Map<String, dynamic> usuario) async {
+  final Uint8List? cardImage = await generateCardImage(context, usuario['id']);
+
+  showDialog(
+    context: context, 
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Enviar Cartão', textAlign: TextAlign.center),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            //cardImage, // A imagem gerada será exibida aqui
+            cardImage != null
+              ? Image.memory(cardImage)
+              : const Text('Erro ao gerar imagem do cartão'),
+          ],
+        ),
+        actions: [
+          Center(
+            child: FractionallySizedBox(
+              widthFactor: 0.9, // 90% da largura da tela
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween, // Alinha os botões
+                children:[
+                  // Botão Editar à esquerda
+                  ElevatedButton(
+                    onPressed: () { 
+                      //Navigator.pop(context);
+                      _mostrarPopupEdicao(usuario);
+                    },
+                    child: const Text('Editar', style: TextStyle(color: Colors.red)),
+                  ),
+
+                  // Botão Salvar ao centro
+                  ElevatedButton(
+                    onPressed: () {
+                      _salvarEdicao(usuario['id']); // Chama a função para salvar
+                      Navigator.pop(context); // Fecha a popup de edição
+                    },
+                    child: const Text('Reenviar'),
+                  ),
+                ]
+              ),
+            ),
+          ),
+          // Botão Adicionar (Aumenta o número de usos)
+          Center(
+            child: FractionallySizedBox(
+              widthFactor: 0.9, // 90% da largura da tela
+              child: ElevatedButton(
+                onPressed: () async {
+                  if (int.parse(_usosController.text) >= int.parse(_maxUsosController.text)) {
+                    Navigator.pop(context); // Fecha a popup de edição
+                    return; // Impede que a popup seja fechada
+                  }
+                // Atualiza o campo de usos no banco
+                await _dbHelper.updateUser({
+                  'usos': usuario['usos'] + 1, // Aumenta o valor de 'usos' em 1
+                });
+                _loadUsers(); // Atualiza a lista de usuários
+                Navigator.pop(context); // Fecha a popup de edição
+              },
+              child: Text('Enviar', style: TextStyle(color: Colors.green)),
+              ),
+            ),
+          )
+        ],
+      );
+    }
+  );
+
+
+
 }
 
 
@@ -271,7 +329,7 @@ Widget build(BuildContext context) {
                   ],
                 ),
                 trailing: const Icon(Icons.edit),
-                onTap: () => _mostrarPopupEdicao(users[index]),
+                onTap: () => _mostrarPopupEnviar(users[index]),
               );
             },
           ),

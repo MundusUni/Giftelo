@@ -36,7 +36,6 @@ class _LayoutStartState extends State<LayoutStart> {
           children: [
 
             //Botão para resetar banco de dados
-            /*
             ElevatedButton(
               onPressed: () async {
                 await DatabaseLayout().resetLayoutDatabase();
@@ -44,7 +43,7 @@ class _LayoutStartState extends State<LayoutStart> {
               },
               child: const Text('Resetar Banco de Dados'),
             ),
-            */
+            
 
             //Botão de Novo
             ElevatedButton(
@@ -74,7 +73,6 @@ class _LayoutStartState extends State<LayoutStart> {
                       logoCircleColor: Color(int.tryParse(defaultValues['logo_circle_color']?.toString() ?? '0xFFFFFFFF') ?? 0xFFFFFFFF),
                       nameLayout: defaultValues['name_layout']?.toString() ?? 'Novo Layout', // Adicione esta linha
                       logoSize: (defaultValues['logo_size'] == null || defaultValues['logo_size'] == 0) ? 50 : (defaultValues['logo_size'] as num).toInt(),
-                      logo: defaultValues['logo'], // Adicione esta linha
                     ),
                   ),
                 );
@@ -89,7 +87,8 @@ class _LayoutStartState extends State<LayoutStart> {
                 // Obtém os layouts do banco de dados
                 final layout = await DatabaseLayout().getAllLayouts(); 
                 final defaultValues = await DatabaseLayout().getDefaultValues('layout_table');
-
+                print(layout);
+                print('teste');
                 // Exibe a lista de layouts em um AlertDialog
                 showDialog(
                   context: context,
@@ -161,7 +160,6 @@ class _LayoutStartState extends State<LayoutStart> {
                                       logoCircleSize: (layout[index]['logo_circle_size'] == null) ? 50 : (layout[index]['logo_circle_size'] as num).toInt(),
                                       logoCircleColor: Color(layout[index]['logo_circle_color']),
                                       nameLayout: layout[index]['name_layout'] ?? 'Novo Layout',
-                                      logo: layout[index]['logo'] != null ? convertBytesToFile(layout[index]['logo']) : null,
                                       logoSize: (layout[index]['logo_size'] == null) ? 50 : (layout[index]['logo_size'] as num).toInt(),
                                     ),
                                   ),

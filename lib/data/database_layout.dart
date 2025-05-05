@@ -39,14 +39,23 @@ Future<void> addLogoSizeColumnIfNotExists() async {
   // Primeiro, verifica se a coluna já existe
   final result = await db.rawQuery("PRAGMA table_info(layout_table)");
 
-  final columnExists = result.any((column) => column['name'] == 'logo_size');
+  final column2Exists = result.any((column) => column['name'] == 'icon_size');
+  final columnExists = result.any((column) => column['name'] == 'circle_size');
+
+  if (!column2Exists) {
+    // Se a coluna não existir, adiciona
+    await db.execute("ALTER TABLE layout_table ADD COLUMN icon_size INTEGER DEFAULT 35");
+    print('Coluna icon_size adicionada com sucesso.');
+  } else {
+    print('A coluna icon_size já existe.');
+  }
 
   if (!columnExists) {
     // Se a coluna não existir, adiciona
-    await db.execute("ALTER TABLE layout_table ADD COLUMN logo_size INTEGER DEFAULT 0");
-    print('Coluna logo_size adicionada com sucesso.');
+    await db.execute("ALTER TABLE layout_table ADD COLUMN circle_size INTEGER DEFAULT 35");
+    print('Coluna circle_size adicionada com sucesso.');
   } else {
-    print('A coluna logo_size já existe.');
+    print('A coluna circle_size já existe.');
   }
 }
 ///
@@ -97,9 +106,10 @@ Future<void> resetLayoutDatabase() async {
             stamp_color INTEGER DEFAULT 4294967040,
             stamp_icon INTEGER DEFAULT 58272, 
             stamp_background INTEGER DEFAULT 57699,
-            logo BLOB,
             number_of_circles INTEGER DEFAULT 1,
-            logo_size INTEGER DEFAULT 0
+            logo_size INTEGER DEFAULT 0,
+            circle_size INTEGER DEFAULT 35,
+            icon_size INTEGER DEFAULT 35
           )
         ''');
       },
@@ -156,7 +166,12 @@ Future<void> resetLayoutDatabase() async {
       where: 'name_layout = ?',
       whereArgs: [nameLayout],
     );
-    return result.isNotEmpty ? result.first : null;
+
+    if (result.isNotEmpty) {
+      return result.first;
+    }
+
+    return null;
   }
 
   //Atualizar um Layout Existente
@@ -167,6 +182,7 @@ Future<void> resetLayoutDatabase() async {
     required String exampleText,
     required int upperTextColor,
     required int lowerTextColor,
+    required int logoCircleSize,
     required int cardColor,
     required int logoCircleColor,
     required int circleColor,
@@ -174,9 +190,9 @@ Future<void> resetLayoutDatabase() async {
     required int stampIcon,
     required int stampBackground,
     required int numberOfCircles,
-    required int logoCircleSize,
-    required Uint8List? logo,
     required int logoSize,
+    required int circleSize,
+    required int iconSize,
   }) async {
     final db = await layoutDatabase;
     await db.update(
@@ -187,6 +203,7 @@ Future<void> resetLayoutDatabase() async {
         'extra_phrase': exampleText,
         'upper_text_color': upperTextColor,
         'lower_text_color': lowerTextColor,
+        'logo_circle_size': logoCircleSize,
         'card_color': cardColor,
         'logo_circle_color': logoCircleColor,
         'circle_color': circleColor,
@@ -194,9 +211,9 @@ Future<void> resetLayoutDatabase() async {
         'stamp_icon': stampIcon,
         'stamp_background': stampBackground,
         'number_of_circles': numberOfCircles,
-        'logo_circle_size': logoCircleSize,
-        'logo': logo,
-        'logo_size': logoSize, // Tamanho do arquivo da logo
+        'logo_size': logoSize,
+        'circle_size': circleSize,
+        'icon_size': iconSize,
       },
       where: 'name_layout = ?',
       whereArgs: [nameLayout],
@@ -210,6 +227,7 @@ Future<void> resetLayoutDatabase() async {
     required String exampleText,
     required int upperTextColor,
     required int lowerTextColor,
+    required int logoCircleSize,
     required int cardColor,
     required int logoCircleColor,
     required int circleColor,
@@ -217,9 +235,9 @@ Future<void> resetLayoutDatabase() async {
     required int stampIcon,
     required int stampBackground,
     required int numberOfCircles,
-    required int logoCircleSize,
-    required Uint8List? logo,
     required int logoSize,
+    required int circleSize,
+    required int iconSize,
   }) async {
     final db = await layoutDatabase;
     await db.insert(
@@ -231,6 +249,7 @@ Future<void> resetLayoutDatabase() async {
         'extra_phrase': exampleText,
         'upper_text_color': upperTextColor,
         'lower_text_color': lowerTextColor,
+        'logo_circle_size': logoCircleSize,
         'card_color': cardColor,
         'logo_circle_color': logoCircleColor,
         'circle_color': circleColor,
@@ -238,9 +257,9 @@ Future<void> resetLayoutDatabase() async {
         'stamp_icon': stampIcon,
         'stamp_background': stampBackground,
         'number_of_circles': numberOfCircles,
-        'logo_circle_size': logoCircleSize,
-        'logo': logo,
         'logo_size': logoSize,
+        'circle_size': circleSize,
+        'icon_size': iconSize,
       },
     );
   }
@@ -296,9 +315,13 @@ Future<void> resetLayoutDatabase() async {
         'stamp_icon': layout['stamp_icon'], // ícone utilizado como stamp
         'stamp_background': layout['stamp_background'], // fundo do stamp
         'number_of_circles': layout['number_of_circles'], // número de círculos atrás dos stamps
-        'logo': layout['logo'], // imagem da logo do cliente
         'logo_size': layout['logo_size'], // tamanho da logo do cliente
+        'circle_size': layout['circle_size'], // tamanho dos círculos atrás dos stamps
+        'icon_size': layout['icon_size'], // tamanho do ícone do stamp
       };
     }).toList();
   }
+
+  
+
 }
