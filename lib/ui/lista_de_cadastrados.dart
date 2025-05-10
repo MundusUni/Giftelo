@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../data/database_users.dart';
 import './lista_de_cadastrados/image_generator.dart';
 import 'package:flutter/services.dart';
+import '../data/database_layout.dart';
 
 class ListaDeCadastrados extends StatefulWidget {
   const ListaDeCadastrados({Key? key}) : super(key: key);
@@ -11,8 +12,10 @@ class ListaDeCadastrados extends StatefulWidget {
 }
 
 class _ListaDeCadastradosState extends State<ListaDeCadastrados> {
+  List<String> _layoutsDisponiveis = [];
   List<Map<String, dynamic>> users = [];
-  final _dbHelper = DatabaseUser();
+  final _dbUser = DatabaseUser();
+  final _dbLayout = DatabaseLayout();
 
   final _nameController = TextEditingController();
   final _celularController = TextEditingController();
@@ -24,17 +27,23 @@ class _ListaDeCadastradosState extends State<ListaDeCadastrados> {
   @override
   void initState() {
     super.initState();
-    _loadUsers(); // Carregar usuários do banco ao abrir a tela
+    _loadUsers();
+    _loadLayouts();
   }
 
   Future<void> _loadUsers() async {
-    final data = await _dbHelper.getAllUsers();
+    final data = await _dbUser.getAllUsers();
     setState(() {
       users = data;
     });
   }
 
-
+  Future<void> _loadLayouts() async {
+    final layouts = await _dbLayout.getAllNames();
+    setState(() {
+      _layoutsDisponiveis = layouts;
+    });
+  }
 
 
 
@@ -51,7 +60,7 @@ class _ListaDeCadastradosState extends State<ListaDeCadastrados> {
     'usos': int.parse(_usosController.text),
     'max_usos': int.parse(_maxUsosController.text),
   };
-    await _dbHelper.addUser(user); // Passando o Map para o método addUser
+    await _dbUser.addUser(user); // Passando o Map para o método addUser
     // Limpando os campos após adicionar o cliente
     _nameController.clear();
     _celularController.clear();
@@ -65,9 +74,9 @@ class _ListaDeCadastradosState extends State<ListaDeCadastrados> {
   void _mostrarPopupNovoCliente() {
     _nameController.clear();
     _celularController.clear();
-    _layoutController.clear();
     _usosController.text = '0';
     _maxUsosController.text = '10';
+    
 
     showDialog(
       context: context,
@@ -79,7 +88,7 @@ class _ListaDeCadastradosState extends State<ListaDeCadastrados> {
             children: [
               _buildTextField('Name', _nameController),
               _buildTextField('Celular', _celularController),
-              _buildTextField('Layout', _layoutController),
+              _buildLayoutDropdown(),
               _buildTextField('Número Máximo de Usos', _maxUsosController, keyboardType: TextInputType.number),
             ],
           ),
@@ -94,6 +103,28 @@ class _ListaDeCadastradosState extends State<ListaDeCadastrados> {
     );
   }
 
+  Widget _buildLayoutDropdown() {
+    final String? dropdownValue = _layoutsDisponiveis.contains(_layoutController.text)
+        ? _layoutController.text
+        : null;
+
+    return DropdownButtonFormField<String>(
+      value: dropdownValue,
+      items: _layoutsDisponiveis.map((String layout) {
+        return DropdownMenuItem<String>(
+          value: layout,
+          child: Text(layout),
+        );
+      }).toList(),
+      onChanged: (String? newValue) {
+        setState(() {
+          _layoutController.text = newValue ?? '';
+        });
+      },
+      decoration: const InputDecoration(labelText: 'Layout'),
+      hint: const Text(''), // Exibe em branco se valor for null
+    );
+  }
 
 void _mostrarPopupEdicao(Map<String, dynamic> usuario) {
   _nameController.text = usuario['name'];
@@ -112,7 +143,7 @@ void _mostrarPopupEdicao(Map<String, dynamic> usuario) {
           children: [
             _buildTextField('Name', _nameController),
             _buildTextField('Celular', _celularController),
-            _buildTextField('Layout', _layoutController),
+            _buildLayoutDropdown(),
             _buildTextField('Usos', _usosController),
             _buildTextField('Número Máximo de Usos', _maxUsosController, keyboardType: TextInputType.number),
           ],
@@ -135,6 +166,7 @@ void _mostrarPopupEdicao(Map<String, dynamic> usuario) {
                 onPressed: () {
                   _salvarEdicao(usuario['id']); // Chama a função para salvar
                   Navigator.pop(context); // Fecha a popup de edição
+                  Navigator.pop(context); // Fecha a popup de envio
                 },
                 child: const Text('Salvar'),
               ),
@@ -173,7 +205,15 @@ void _mostrarPopupEdicao(Map<String, dynamic> usuario) {
 
 
 void _mostrarPopupEnviar(Map<String, dynamic> usuario) async {
-  final Uint8List? cardImage = await generateCardImage(context, usuario['id']);
+  Uint8List? cardImage;
+
+  try {
+    cardImage = await generateCardImage(context, usuario['id']);
+  } catch (e) {
+    // Loga o erro se quiser
+    print('Erro ao gerar imagem do cartão: $e');
+    cardImage = null; // Garante que será tratado abaixo
+  }
 
   showDialog(
     context: context, 
@@ -186,7 +226,7 @@ void _mostrarPopupEnviar(Map<String, dynamic> usuario) async {
             //cardImage, // A imagem gerada será exibida aqui
             cardImage != null
               ? Image.memory(cardImage)
-              : const Text('Erro ao gerar imagem do cartão'),
+              : const Text('Não foi possível carregar o cartão.\nVerifique se o layout ainda existe.'),
           ],
         ),
         actions: [
@@ -228,7 +268,7 @@ void _mostrarPopupEnviar(Map<String, dynamic> usuario) async {
                     return; // Impede que a popup seja fechada
                   }
                 // Atualiza o campo de usos no banco
-                await _dbHelper.updateUser({
+                await _dbUser.updateUser({
                   'usos': usuario['usos'] + 1, // Aumenta o valor de 'usos' em 1
                 });
                 _loadUsers(); // Atualiza a lista de usuários
@@ -259,7 +299,7 @@ void _mostrarPopupEnviar(Map<String, dynamic> usuario) async {
         'usos': int.parse(_usosController.text),
         'max_usos': int.parse(_maxUsosController.text),
       };
-      await _dbHelper.updateUser(user);
+      await _dbUser.updateUser(user);
       //Navigator.pop(context);
       _loadUsers(); // Atualizar a lista de usuários na tela
     } catch (e) {
@@ -269,7 +309,7 @@ void _mostrarPopupEnviar(Map<String, dynamic> usuario) async {
 
 
 void _deleteUser(int id) async {
-  await _dbHelper.deleteUser(id); // Deleta o usuário do banco de dados
+  await _dbUser.deleteUser(id); // Deleta o usuário do banco de dados
   _loadUsers(); // Atualiza a lista de usuários na tela
 }
 
@@ -290,6 +330,7 @@ void _confirmarExclusao(int id) {
               _deleteUser(id); // Deleta o usuário
               Navigator.pop(context); // Fecha a popup de confirmação
               Navigator.pop(context); // Fecha a popup de edição (caso esteja aberta)
+              Navigator.pop(context);
             },
             child: Text('Excluir', style: TextStyle(color: Colors.red)),
           ),

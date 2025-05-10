@@ -322,6 +322,16 @@ Future<void> resetLayoutDatabase() async {
     }).toList();
   }
 
-  
+    // Retorna todos os nomes presentes na coluna 'name_layout'
+  Future<List<String>> getAllNames() async {
+    final db = await layoutDatabase;
+    final result = await db.query(
+      'layout_table',
+      columns: ['name_layout'],
+    );
+
+    // Transforma os resultados em uma lista de strings
+    return result.map((row) => row['name_layout'] as String).toList();
+  }
 
 }
