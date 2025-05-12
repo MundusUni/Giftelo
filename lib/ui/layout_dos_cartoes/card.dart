@@ -52,28 +52,16 @@ class CustomCard extends StatefulWidget {
   
 
 class _CustomCardState extends State<CustomCard> {
-  late int localStampCount; // Número de stamps gerenciado localmente
-  late int localNumberOfCircles; // Número de circles gerenciado localmente
-
-  // Método para criar um círculo branco
-  Widget _buildCircle() {
-    return Container(
-      width: 30, // Largura do círculo
-      height: 30, // Altura do círculo
-      decoration: BoxDecoration(
-        color: widget.circleColor, // Cor do círculo
-        shape: BoxShape.circle, // Formato circular
-      ),
-    );
-  }  
+  double width = 400;
+  double height = 180;
 
   @override 
   Widget build(BuildContext context) {
 
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-      width: 400,
-      height: 180, // Ajuste a altura para acomodar três linhas
+      width: width,
+      height: height, // Ajuste a altura para acomodar três linhas
       decoration: BoxDecoration(
         color: widget.cardColor, // Cor do Cartão
         borderRadius: BorderRadius.circular(16),
@@ -81,226 +69,149 @@ class _CustomCardState extends State<CustomCard> {
       child: Stack(
         children: [
           
+
           // Círculo branco à esquerda
-          Padding(
-            padding: const EdgeInsets.only(right:250),
-            child: Align (
-              alignment: Alignment.center, // Alinha horizontalmente à esquerda e verticalmente ao centro
+          Align(
+            alignment: Alignment(-0.7, 0.0),
+            child: Transform.translate(
+              offset: Offset(-widget.logoCircleSize / 2, 0), // Só compensa no eixo X
               child: Container(
-                width: widget.logoCircleSize, // Largura do círculo
-                height: widget.logoCircleSize, // Altura do círculo
+                width: widget.logoCircleSize,
+                height: widget.logoCircleSize,
                 decoration: BoxDecoration(
-                  color: widget.logoCircleColor, // Cor do círculo
-                  shape: BoxShape.circle, // Formato circular
+                  color: widget.logoCircleColor,
+                  shape: BoxShape.circle,
                 ),
               ),
             ),
           ),
 
+
           //Logo
           if (widget.logo != null)
-          Padding(
-            padding: const EdgeInsets.only(right:250),
-            child: Align (
-              alignment: Alignment.center, // Alinha horizontalmente à esquerda e verticalmente ao centro
+          Align(
+            alignment: Alignment(-0.7, 0.0),
+            child: Transform.translate(
+              offset: Offset(-widget.logoSize / 2, 0), // Compensa somente no eixo X
               child: Image.file(
                 widget.logo!,
                 height: widget.logoSize,
                 width: widget.logoSize,
                 fit: BoxFit.cover,
-              ), // Exibe a imagem recebida                
+              ),
             ),
           ),
 
 
-          Container(
-            margin: const EdgeInsets.only(left: 96, right: 12, top:33),
-            width: 400,
-            height: 180, // Altura total do cartão
-            decoration: BoxDecoration(
-              color: widget.cardColor, // Cor do cartão
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Stack(
-              children: [
-                // GridView para os círculos
-                GridView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 6,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
-                  ),
-                  itemCount: widget.numberOfCircles,
-                  itemBuilder: (context, index) {
-                    bool showStamp = index < widget.stampCount;
-                    
-                    return LayoutBuilder(
-                      builder: (context, constraints) {
-                        final cellWidth = constraints.maxWidth;
-                        final cellHeight = constraints.maxHeight;
-                        
-                        return SizedBox(
-                          width: cellWidth,
-                          height: cellHeight,
-                          child: Stack(
-                            clipBehavior: Clip.none,
-                            fit: StackFit.expand,
-                            children: [
-                              // Círculo de fundo absolutamente centralizado
-                              Positioned(
-                                left: cellWidth / 2 - widget.circleSize / 2,
-                                top: cellHeight / 2 - widget.circleSize / 2,
-                                width: widget.circleSize.toDouble(),
-                                height: widget.circleSize.toDouble(),
-                                child: Icon(
-                                  widget.stampBackground,
-                                  size: widget.circleSize.toDouble(),
-                                  color: widget.circleColor,
-                                ),
-                              ),
-                              
-                              // Carimbo absolutamente centralizado
-                              if (showStamp)
+          //Container que contem o GridView
+          Align(
+            alignment: Alignment(0.75,0),
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.6,
+              height: MediaQuery.of(context).size.width * 0.29,
+              decoration: BoxDecoration(
+                color: widget.cardColor, // Cor do cartão
+              ),
+              child: Stack(
+                children: [
+                  
+                  // GridView para os círculos
+                  GridView.builder(
+                    padding: EdgeInsets.zero, // remove o espaço interno
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 6,
+                      crossAxisSpacing: MediaQuery.of(context).size.width * 0.02,
+                      mainAxisSpacing: MediaQuery.of(context).size.width * 0.02,
+                    ),
+                    itemCount: widget.numberOfCircles,
+                    itemBuilder: (context, index) {
+                      bool showStamp = index < widget.stampCount;
+                      
+                      return LayoutBuilder(
+                        builder: (context, constraints) {
+                          final cellWidth = constraints.maxWidth;
+                          final cellHeight = constraints.maxHeight;
+                          
+                          return SizedBox(
+                            width: cellWidth,
+                            height: cellHeight,
+                            child: Stack(
+                              clipBehavior: Clip.none,
+                              fit: StackFit.expand,
+                              children: [
+                                // Círculo de fundo absolutamente centralizado
                                 Positioned(
-                                  left: cellWidth / 2 - widget.iconSize / 2,
-                                  top: cellHeight / 2 - widget.iconSize / 2,
-                                  width: widget.iconSize.toDouble(),
-                                  height: widget.iconSize.toDouble(),
+                                  left: cellWidth / 2 - widget.circleSize / 2,
+                                  top: cellHeight / 2 - widget.circleSize / 2,
+                                  width: widget.circleSize.toDouble(),
+                                  height: widget.circleSize.toDouble(),
                                   child: Icon(
-                                    widget.stampIcon,
-                                    size: widget.iconSize.toDouble(),
-                                    color: widget.stampColor,
+                                    widget.stampBackground,
+                                    size: widget.circleSize.toDouble(),
+                                    color: widget.circleColor,
                                   ),
                                 ),
-                            ],
-                          ),
-                        );
-                      },
-                    );
-                  },
-                )
-              ],
+                                
+                                // Carimbo absolutamente centralizado
+                                if (showStamp)
+                                  Positioned(
+                                    left: cellWidth / 2 - widget.iconSize / 2,
+                                    top: cellHeight / 2 - widget.iconSize / 2,
+                                    width: widget.iconSize.toDouble(),
+                                    height: widget.iconSize.toDouble(),
+                                    child: Icon(
+                                      widget.stampIcon,
+                                      size: widget.iconSize.toDouble(),
+                                      color: widget.stampColor,
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  )
+                ],
+              ),
             ),
           ),
 
-          // Texto acima e abaixo dos círculos
-          Padding(
-            padding: const EdgeInsets.all(10),
-            child: Stack(
-              children: [
-                // Texto Acima dos círculos
-                Container(
-                  width: double.infinity,
-                  alignment: Alignment.topCenter,
-                  child: Text(
-                    widget.upperText, // 56 Caracteres Texto que será exibido
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: widget.upperTextColor, // Cor do texto superior
-                    ),
-                    softWrap: false, // Impede que o texto quebre para a próxima linha
-                    overflow: TextOverflow.fade, // Permite que o texto continue além dos limites
-                  ),
-                ),
-                // Texto Abaixo dos círculos
-                Container(
-                  width: double.infinity,
-                  alignment: Alignment.bottomCenter,
-                  child: Text(
-                    widget.lowerText, // 56 Caracteres Texto que será exibido
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: widget.lowerTextColor, // Cor do texto inferior
-                    ),
-                    softWrap: false, // Impede que o texto quebre para a próxima linha
-                    overflow: TextOverflow.fade, // Permite que o texto continue além dos limites
-                  ),
-                ),
-              ],
-            ),
-          ),
 
-          /*
-          // Círculos de fundo
+          // Texto Acima dos círculos
           Container(
-            clipBehavior: Clip.none,
-            padding: const EdgeInsets.only(left: 102, right: 3, top:40), // Adiciona padding à esquerda e à direita
-            child: Stack(
-              children: [
-                
-                // Círculos no fundo
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Primeira linha de círculos
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: List.generate(
-                          topRowCircles,
-                          (index) => Padding(
-                            padding: const EdgeInsets.only(right: 10),
-                            child: Icon(
-                              widget.stampBackground, // Ícone vindo da variável
-                              size: 30, // Tamanho do ícone
-                              color: widget.circleColor, // Cor do ícone (ou outra cor desejada)
-                            ),
-                          ),
-                        ),
-                      ),
-                      if (middleRowCircles > 0) const SizedBox(height: 5), // Espaçamento entre as linhas
-                      // Segunda linha de círculos
-                      if (middleRowCircles > 0)
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: List.generate(
-                          middleRowCircles,
-                          (index) => Padding(
-                            padding: const EdgeInsets.only(right: 10),
-                            child: Icon(
-                              widget.stampBackground, // Ícone vindo da variável
-                              size: 30, // Tamanho do ícone
-                              color: widget.circleColor, // Cor do ícone (ou outra cor desejada)
-                            ),
-                          ),
-                        ),
-                      ),
-                      if (bottomRowCircles > 0) const SizedBox(height: 5), // Espaçamento entre as linhas
-                      // Terceira linha de círculos
-                      if (bottomRowCircles > 0)
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: List.generate(
-                          bottomRowCircles,
-                          (index) => Padding(
-                            padding: const EdgeInsets.only(right: 10),
-                            child: Icon(
-                              widget.stampBackground, // Ícone vindo da variável
-                              size: 30, // Tamanho do ícone
-                              color: widget.circleColor, // Cor do ícone (ou outra cor desejada)
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-
-                // Ícones de pizza sobrepostos aos círculos
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: Stamp(
-                    stampCount: widget.stampCount,
-                    stampIcon: widget.stampIcon,
-                    stampColor: widget.stampColor,
-                  ),
-                ),
-              ],
+            width: double.infinity,
+            alignment: Alignment(0,-0.92),
+            child: Text(
+              widget.upperText, // 56 Caracteres Texto que será exibido
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: widget.upperTextColor, // Cor do texto superior
+              ),
+              softWrap: false, // Impede que o texto quebre para a próxima linha
+              overflow: TextOverflow.fade, // Permite que o texto continue além dos limites
             ),
           ),
-          */
+
+
+          // Texto Abaixo dos círculos
+          Container(
+            width: double.infinity,
+            alignment: Alignment(0,0.92),
+            child: Text(
+              widget.lowerText, // 56 Caracteres Texto que será exibido
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: widget.lowerTextColor, // Cor do texto inferior
+              ),
+              softWrap: false, // Impede que o texto quebre para a próxima linha
+              overflow: TextOverflow.fade, // Permite que o texto continue além dos limites
+            ),
+          ),
+
 
         ],
       ),

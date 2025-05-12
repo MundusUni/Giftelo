@@ -8,11 +8,6 @@ import '../layout_dos_cartoes/card.dart';
 import '/data/database_users.dart';
 import '/data/database_layout.dart';
 
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'dart:io';
-
-
 Future<Uint8List?> generateCardImage(BuildContext context, int id) async {
   final GlobalKey repaintKey = GlobalKey();
 
@@ -26,8 +21,8 @@ Future<Uint8List?> generateCardImage(BuildContext context, int id) async {
   final layoutData = await dbLayout.getLayoutByName(layoutName);
 
   // Definir dimensões fixas para o cartão - IMPORTANTE manter estas dimensões exatas
-  const double cardWidth = 400.0;
-  const double cardHeight = 180.0;
+  const double cardWidth = 380.0;
+  const double cardHeight = 200.0;
 
   // Criando o widget temporário fora da tela
   final overlayWidget = Positioned(
@@ -40,28 +35,31 @@ Future<Uint8List?> generateCardImage(BuildContext context, int id) async {
         key: repaintKey,
         child: Material(
           color: Colors.transparent,
-          child: CustomCard(
-            cardColor: Color(layoutData?['card_color'] ?? 0xFFFFFFFF),
-            stampIcon: layoutData?['stamp_icon'] != null
-                ? IconData(layoutData!['stamp_icon'], fontFamily: 'MaterialIcons')
-                : const IconData(0xe163, fontFamily: 'MaterialIcons'),
-            stampBackground: layoutData?['stamp_background'] != null
-                ? IconData(layoutData!['stamp_background'], fontFamily: 'MaterialIcons')
-                : const IconData(0xe163, fontFamily: 'MaterialIcons'),
-            stampColor: Color(layoutData?['stamp_color'] ?? 0xFF000000),
-            stampCount: user['usos'],
-            numberOfCircles: layoutData?['number_of_circles'],
-            circleColor: Color(layoutData?['circle_color'] ?? 0xFF888888),
-            upperTextColor: Color(layoutData?['upper_text_color'] ?? 0xFF000000),
-            lowerTextColor: Color(layoutData?['lower_text_color'] ?? 0xFF000000),
-            upperText: layoutData?['upper_text'],
-            lowerText: layoutData?['lower_text'],
-            logoCircleSize: (layoutData?['logo_circle_size'] as num?)?.toDouble() ?? 40.0,
-            logoCircleColor: Color(layoutData?['logo_circle_color'] ?? 0x00000000),
-            iconSize: layoutData?['icon_size'],
-            circleSize: layoutData?['circle_size'],
-            logo: layoutData?['logo'],
-            logoSize: (layoutData?['logo_size'] as num?)?.toDouble() ?? 30.0,
+          child: MediaQuery(
+            data: MediaQueryData.fromView(WidgetsBinding.instance.window),
+            child: CustomCard(
+              cardColor: Color(layoutData?['card_color'] ?? 0xFFFFFFFF),
+              stampIcon: layoutData?['stamp_icon'] != null
+                  ? IconData(layoutData!['stamp_icon'], fontFamily: 'MaterialIcons')
+                  : const IconData(0xe163, fontFamily: 'MaterialIcons'),
+              stampBackground: layoutData?['stamp_background'] != null
+                  ? IconData(layoutData!['stamp_background'], fontFamily: 'MaterialIcons')
+                  : const IconData(0xe163, fontFamily: 'MaterialIcons'),
+              stampColor: Color(layoutData?['stamp_color'] ?? 0xFF000000),
+              stampCount: user['usos'],
+              numberOfCircles: layoutData?['number_of_circles'],
+              circleColor: Color(layoutData?['circle_color'] ?? 0xFF888888),
+              upperTextColor: Color(layoutData?['upper_text_color'] ?? 0xFF000000),
+              lowerTextColor: Color(layoutData?['lower_text_color'] ?? 0xFF000000),
+              upperText: layoutData?['upper_text'],
+              lowerText: layoutData?['lower_text'],
+              logoCircleSize: (layoutData?['logo_circle_size'] as num?)?.toDouble() ?? 40.0,
+              logoCircleColor: Color(layoutData?['logo_circle_color'] ?? 0x00000000),
+              iconSize: layoutData?['icon_size'],
+              circleSize: layoutData?['circle_size'],
+              logo: layoutData?['logo'],
+              logoSize: (layoutData?['logo_size'] as num?)?.toDouble() ?? 30.0,
+            ),
           ),
         ),
       ),
@@ -127,39 +125,3 @@ Future<void> _waitForPaint(bool Function() isReady) async {
     print('Aviso: Tempo máximo excedido aguardando a renderização');
   }
 }
-
-/*
-Future<void> saveWidgetAsImage(GlobalKey repaintKey) async {
-  try {
-    // Pede permissão
-    final status = await Permission.storage.request();
-    if (!status.isGranted) {
-      throw Exception("Permissão para salvar imagem negada.");
-    }
-
-    // Captura imagem do widget
-    RenderRepaintBoundary boundary =
-        repaintKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
-
-    ui.Image image = await boundary.toImage(pixelRatio: 3.0);
-    ByteData? byteData =
-        await image.toByteData(format: ui.ImageByteFormat.png);
-
-    if (byteData == null) throw Exception("Erro ao converter imagem");
-
-    Uint8List pngBytes = byteData.buffer.asUint8List();
-
-    // Salva na galeria
-    final result = await ImageGallerySaver.saveImage(pngBytes,
-        quality: 100, name: "cartao_digital");
-
-    if (result['isSuccess']) {
-      debugPrint("Imagem salva com sucesso!");
-    } else {
-      throw Exception("Falha ao salvar imagem");
-    }
-  } catch (e) {
-    debugPrint("Erro: $e");
-  }
-}
-*/
