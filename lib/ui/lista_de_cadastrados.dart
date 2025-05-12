@@ -1,12 +1,10 @@
-import 'package:path_provider/path_provider.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'dart:io';
 
 import '../data/database_users.dart';
 import '../data/database_layout.dart';
 import './lista_de_cadastrados/image_generator.dart';
+import './lista_de_cadastrados/share_image.dart';
 
 
 class ListaDeCadastrados extends StatefulWidget {
@@ -27,6 +25,12 @@ class _ListaDeCadastradosState extends State<ListaDeCadastrados> {
   final _layoutController = TextEditingController();
   final _usosController = TextEditingController(text: '0');
 
+  // Obtém o número de círculos para um layout específico
+  int getNumberOfCircles(String layoutName) {
+    return _layoutCircles[layoutName] ?? 0; // Valor padrão caso não encontre
+  }
+
+  
 
   @override
   void initState() {
@@ -36,6 +40,8 @@ class _ListaDeCadastradosState extends State<ListaDeCadastrados> {
     _loadLayoutCircles();
   }
 
+
+
   Future<void> _loadUsers() async {
     final data = await _dbUser.getAllUsers();
     setState(() {
@@ -43,12 +49,15 @@ class _ListaDeCadastradosState extends State<ListaDeCadastrados> {
     });
   }
 
+
+
   Future<void> _loadLayouts() async {
     final layouts = await _dbLayout.getAllNames();
     setState(() {
       _layoutsDisponiveis = layouts;
     });
   }
+
 
 
   // Carrega o número de círculos para cada layout
@@ -66,12 +75,6 @@ class _ListaDeCadastradosState extends State<ListaDeCadastrados> {
       _layoutCircles = circlesMap;
     });
   }
-
-  // Obtém o número de círculos para um layout específico
-  int getNumberOfCircles(String layoutName) {
-    return _layoutCircles[layoutName] ?? 0; // Valor padrão caso não encontre
-  }
-
 
 
 
@@ -93,11 +96,12 @@ class _ListaDeCadastradosState extends State<ListaDeCadastrados> {
     _loadUsers(); // Atualizar a lista após adicionar
   }
 
+
+
   void _mostrarPopupNovoCliente() {
     _nameController.clear();
     _usosController.text = '0';
     
-
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -120,6 +124,8 @@ class _ListaDeCadastradosState extends State<ListaDeCadastrados> {
       },
     );
   }
+
+
 
   Widget _buildLayoutDropdown() {
     final String? dropdownValue = _layoutsDisponiveis.contains(_layoutController.text)
@@ -144,8 +150,10 @@ class _ListaDeCadastradosState extends State<ListaDeCadastrados> {
     );
   }
 
-    void _mostrarPopupEdicao(Map<String, dynamic> usuario) {
-      _nameController.text = usuario['name'];
+
+
+  void _mostrarPopupEdicao(Map<String, dynamic> usuario) {
+    _nameController.text = usuario['name'];
     _layoutController.text = usuario['layout'];
     _usosController.text = usuario['usos'].toString(); // Preenche os usos
 
@@ -191,6 +199,7 @@ class _ListaDeCadastradosState extends State<ListaDeCadastrados> {
       },
     );
   }
+
 
 
   void _mostrarPopupEnviar(Map<String, dynamic> usuario) async {
@@ -354,25 +363,7 @@ class _ListaDeCadastradosState extends State<ListaDeCadastrados> {
   }
 
 
-  Future<void> shareImageToWhatsApp(Uint8List imageBytes) async {
-    try {
-      // Cria um arquivo temporário
-      final tempDir = await getTemporaryDirectory();
-      final tempFile = File('${tempDir.path}/temp_image_${DateTime.now().millisecondsSinceEpoch}.png');
-      
-      // Escreve a imagem no arquivo temporário
-      await tempFile.writeAsBytes(imageBytes);
-      
-      // Compartilha o arquivo com o WhatsApp ou qualquer outro app
-      await Share.shareXFiles(
-        [XFile(tempFile.path)],
-        text: 'Compartilhando imagem',
-      );
-    } catch (e) {
-      debugPrint('Erro ao compartilhar: $e');
-    }
-  }
-
+  
   Future<void> _salvarEdicao(int id) async {
     try {
       // Criação do Map com os dados
@@ -391,10 +382,13 @@ class _ListaDeCadastradosState extends State<ListaDeCadastrados> {
   }
 
 
+
   void _deleteUser(int id) async {
     await _dbUser.deleteUser(id); // Deleta o usuário do banco de dados
     _loadUsers(); // Atualiza a lista de usuários na tela
   }
+
+
 
   void _confirmarExclusao(int id) {
     showDialog(
@@ -423,6 +417,8 @@ class _ListaDeCadastradosState extends State<ListaDeCadastrados> {
     );
   }
 
+
+
   Widget _buildTextField(String label, TextEditingController controller, {TextInputType? keyboardType}) {
     return TextField(
       controller: controller,
@@ -430,6 +426,8 @@ class _ListaDeCadastradosState extends State<ListaDeCadastrados> {
       decoration: InputDecoration(labelText: label),
     );
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -463,6 +461,8 @@ class _ListaDeCadastradosState extends State<ListaDeCadastrados> {
       ),
     );
   }
+
+
 
   @override
   void dispose() {
