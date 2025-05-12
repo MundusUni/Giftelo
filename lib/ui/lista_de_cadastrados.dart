@@ -44,6 +44,10 @@ class _ListaDeCadastradosState extends State<ListaDeCadastrados> {
 
   Future<void> _loadUsers() async {
     final data = await _dbUser.getAllUsers();
+
+    // Ordena a lista alfabeticamente pelo campo 'name'
+    data.sort((a, b) => a['name'].toString().toLowerCase().compareTo(b['name'].toString().toLowerCase()));
+
     setState(() {
       users = data;
     });
