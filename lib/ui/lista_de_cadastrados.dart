@@ -1,8 +1,13 @@
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:flutter/material.dart';
-import '../data/database_users.dart';
-import './lista_de_cadastrados/image_generator.dart';
 import 'package:flutter/services.dart';
+import 'dart:io';
+
+import '../data/database_users.dart';
 import '../data/database_layout.dart';
+import './lista_de_cadastrados/image_generator.dart';
+
 
 class ListaDeCadastrados extends StatefulWidget {
   const ListaDeCadastrados({Key? key}) : super(key: key);
@@ -14,6 +19,7 @@ class ListaDeCadastrados extends StatefulWidget {
 class _ListaDeCadastradosState extends State<ListaDeCadastrados> {
   List<String> _layoutsDisponiveis = [];
   List<Map<String, dynamic>> users = [];
+  Map<String, int> _layoutCircles = {}; // Mapeia nomes de layout para number_of_circles
   final _dbUser = DatabaseUser();
   final _dbLayout = DatabaseLayout();
 
@@ -21,7 +27,7 @@ class _ListaDeCadastradosState extends State<ListaDeCadastrados> {
   final _celularController = TextEditingController();
   final _layoutController = TextEditingController();
   final _usosController = TextEditingController(text: '0');
-  final _maxUsosController = TextEditingController(text: '10');
+  final _maxUsosController = TextEditingController(text: '0');
 
 
   @override
@@ -29,6 +35,7 @@ class _ListaDeCadastradosState extends State<ListaDeCadastrados> {
     super.initState();
     _loadUsers();
     _loadLayouts();
+    _loadLayoutCircles();
   }
 
   Future<void> _loadUsers() async {
@@ -46,10 +53,31 @@ class _ListaDeCadastradosState extends State<ListaDeCadastrados> {
   }
 
 
+  // Carrega o número de círculos para cada layout
+  Future<void> _loadLayoutCircles() async {
+    final layouts = await _dbLayout.getAllLayouts();
+    final Map<String, int> circlesMap = {};
+    
+    for (var layout in layouts) {
+      String name = layout['name_layout'] as String;
+      int circles = layout['number_of_circles'] as int;
+      circlesMap[name] = circles;
+    }
+    
+    setState(() {
+      _layoutCircles = circlesMap;
+    });
+  }
+
+  // Obtém o número de círculos para um layout específico
+  int getNumberOfCircles(String layoutName) {
+    return _layoutCircles[layoutName] ?? 0; // Valor padrão caso não encontre
+  }
 
 
 
- Future<void> _adicionarCliente() async {
+
+  Future<void> _adicionarCliente() async {
     if (_nameController.text.isEmpty) return;
 
   // Criação do Map com os dados
@@ -126,167 +154,263 @@ class _ListaDeCadastradosState extends State<ListaDeCadastrados> {
     );
   }
 
-void _mostrarPopupEdicao(Map<String, dynamic> usuario) {
-  _nameController.text = usuario['name'];
-  _celularController.text = usuario['celular'];
-  _layoutController.text = usuario['layout'];
-  _usosController.text = usuario['usos'].toString(); // Preenche os usos
-  _maxUsosController.text = usuario['max_usos'].toString();
+    void _mostrarPopupEdicao(Map<String, dynamic> usuario) {
+      _nameController.text = usuario['name'];
+      _celularController.text = usuario['celular'];
+    _layoutController.text = usuario['layout'];
+    _usosController.text = usuario['usos'].toString(); // Preenche os usos
+    _maxUsosController.text = usuario['max_usos'].toString();
 
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: const Text('Editar Cliente', textAlign: TextAlign.center),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _buildTextField('Name', _nameController),
-            _buildTextField('Celular', _celularController),
-            _buildLayoutDropdown(),
-            _buildTextField('Usos', _usosController),
-            _buildTextField('Número Máximo de Usos', _maxUsosController, keyboardType: TextInputType.number),
-          ],
-        ),
-        actions: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween, // Alinha os botões
-            children:[
-
-                // Botão Deletar à esquerda
-              ElevatedButton(
-                onPressed: () { 
-                  _confirmarExclusao(usuario['id']); // Chama a confirmação de exclusão
-                },
-                child: const Text('Deletar', style: TextStyle(color: Colors.red)),
-              ),
-
-              // Botão Salvar à direita
-              ElevatedButton(
-                onPressed: () {
-                  _salvarEdicao(usuario['id']); // Chama a função para salvar
-                  Navigator.pop(context); // Fecha a popup de edição
-                  Navigator.pop(context); // Fecha a popup de envio
-                },
-                child: const Text('Salvar'),
-              ),
-
-              
-              // Botão Adicionar (Aumenta o número de usos)
-              /*
-              TextButton(
-                onPressed: () async {
-                  if (int.parse(_usosController.text) >= int.parse(_maxUsosController.text)) {
-                    Navigator.pop(context); // Fecha a popup de edição
-                    return; // Impede que a popup seja fechada
-                  }
-                  // Atualiza o campo de usos no banco
-                  await _dbHelper.updateUser({
-                    'id': usuario['id'],
-                    'name': _nameController.text,
-                    'celular': _celularController.text,
-                    'layout': _layoutController.text,
-                    'usos': usuario['usos'] + 1, // Aumenta o valor de 'usos' em 1
-                    'max_usos': int.parse(_maxUsosController.text),
-                  });
-                _loadUsers(); // Atualiza a lista de usuários
-                Navigator.pop(context); // Fecha a popup de edição
-                },
-              child: Text('Adicionar', style: TextStyle(color: Colors.green)),
-              ),
-              */
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Editar Cliente', textAlign: TextAlign.center),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildTextField('Nome', _nameController),
+              //_buildTextField('Celular', _celularController),
+              _buildLayoutDropdown(),
+              _buildTextField('Usos', _usosController),
+              //_buildTextField('Número Máximo de Usos', _maxUsosController, keyboardType: TextInputType.number),
             ],
-          )
-        ],
-      );
-    },
-  );
-}
+          ),
+          actions: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween, // Alinha os botões
+              children:[
 
+                  // Botão Deletar à esquerda
+                ElevatedButton(
+                  onPressed: () { 
+                    _confirmarExclusao(usuario['id']); // Chama a confirmação de exclusão
+                  },
+                  child: const Text('Deletar', style: TextStyle(color: Colors.red)),
+                ),
 
-void _mostrarPopupEnviar(Map<String, dynamic> usuario) async {
-  Uint8List? cardImage;
+                // Botão Salvar à direita
+                ElevatedButton(
+                  onPressed: () {
+                    _salvarEdicao(usuario['id']); // Chama a função para salvar
+                    Navigator.pop(context); // Fecha a popup de edição
+                    Navigator.pop(context); // Fecha a popup de envio
+                  },
+                  child: const Text('Salvar'),
+                ),
 
-  try {
-    cardImage = await generateCardImage(context, usuario['id']);
-  } catch (e) {
-    // Loga o erro se quiser
-    print('Erro ao gerar imagem do cartão: $e');
-    cardImage = null; // Garante que será tratado abaixo
+                
+                // Botão Adicionar (Aumenta o número de usos)
+                /*
+                TextButton(
+                  onPressed: () async {
+                    if (int.parse(_usosController.text) >= int.parse(_maxUsosController.text)) {
+                      Navigator.pop(context); // Fecha a popup de edição
+                      return; // Impede que a popup seja fechada
+                    }
+                    // Atualiza o campo de usos no banco
+                    await _dbHelper.updateUser({
+                      'id': usuario['id'],
+                      'name': _nameController.text,
+                      'celular': _celularController.text,
+                      'layout': _layoutController.text,
+                      'usos': usuario['usos'] + 1, // Aumenta o valor de 'usos' em 1
+                      'max_usos': int.parse(_maxUsosController.text),
+                    });
+                  _loadUsers(); // Atualiza a lista de usuários
+                  Navigator.pop(context); // Fecha a popup de edição
+                  },
+                child: Text('Adicionar', style: TextStyle(color: Colors.green)),
+                ),
+                */
+              ],
+            )
+          ],
+        );
+      },
+    );
   }
 
-  showDialog(
-    context: context, 
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: const Text('Enviar Cartão', textAlign: TextAlign.center),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            //cardImage, // A imagem gerada será exibida aqui
-            cardImage != null
-              ? Image.memory(cardImage)
-              : const Text('Não foi possível carregar o cartão.\nVerifique se o layout ainda existe.'),
-          ],
-        ),
-        actions: [
-          Center(
-            child: FractionallySizedBox(
-              widthFactor: 0.9, // 90% da largura da tela
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween, // Alinha os botões
-                children:[
-                  // Botão Editar à esquerda
-                  ElevatedButton(
-                    onPressed: () { 
-                      //Navigator.pop(context);
-                      _mostrarPopupEdicao(usuario);
-                    },
-                    child: const Text('Editar', style: TextStyle(color: Colors.red)),
-                  ),
 
-                  // Botão Salvar ao centro
-                  ElevatedButton(
-                    onPressed: () {
-                      _salvarEdicao(usuario['id']); // Chama a função para salvar
-                      Navigator.pop(context); // Fecha a popup de edição
-                    },
-                    child: const Text('Reenviar'),
-                  ),
-                ]
-              ),
+  void _mostrarPopupEnviar(Map<String, dynamic> usuario) async {
+    Uint8List? cardImage;
+
+    try {
+      // Mostra um indicador de carregamento enquanto gera a imagem
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return const AlertDialog(
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(height: 16),
+                Text('Gerando cartão...')
+              ],
+            ),
+          );
+        },
+      );
+      
+      // Gera a imagem do cartão com as dimensões originais
+      cardImage = await generateCardImage(context, usuario['id']);
+      
+      // Fecha o diálogo de carregamento
+      Navigator.of(context).pop();
+    } catch (e) {
+      // Fecha o diálogo de carregamento em caso de erro
+      Navigator.of(context).pop();
+      print('Erro ao gerar imagem do cartão: $e');
+      cardImage = null;
+    }
+
+    // Exibe o diálogo com o cartão
+    showDialog(
+      context: context, 
+      builder: (BuildContext context) {
+        // Calcula as dimensões da tela
+        final screenWidth = MediaQuery.of(context).size.width;
+        final screenHeight = MediaQuery.of(context).size.height;
+        
+        // Calcula o tamanho máximo disponível mantendo a proporção do cartão
+        final double aspectRatio = 400 / 180;
+        final double maxWidth = screenWidth * 0.85; // 85% da largura da tela
+        final double maxHeight = screenHeight * 0.5; // 50% da altura da tela
+        
+        // Calcula as dimensões finais mantendo a proporção
+        double displayWidth = maxWidth;
+        double displayHeight = displayWidth / aspectRatio;
+        
+        // Se a altura calculada exceder o máximo, ajusta baseado na altura
+        if (displayHeight > maxHeight) {
+          displayHeight = maxHeight;
+          displayWidth = displayHeight * aspectRatio;
+        }
+        
+        return AlertDialog(
+          title: const Text('Enviar Cartão', textAlign: TextAlign.center),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (cardImage != null)
+                  Container(
+                    width: displayWidth,
+                    height: displayHeight,
+                    child: Image.memory(
+                      cardImage,
+                      fit: BoxFit.contain,
+                      // A imagem mantém suas proporções exatas de 400x180
+                    ),
+                  )
+                else
+                  const Text('Não foi possível carregar o cartão.\nVerifique se o layout ainda existe.'),
+              ],
             ),
           ),
-          // Botão Adicionar (Aumenta o número de usos)
-          Center(
-            child: FractionallySizedBox(
-              widthFactor: 0.9, // 90% da largura da tela
-              child: ElevatedButton(
-                onPressed: () async {
-                  if (int.parse(_usosController.text) >= int.parse(_maxUsosController.text)) {
-                    Navigator.pop(context); // Fecha a popup de edição
-                    return; // Impede que a popup seja fechada
-                  }
-                // Atualiza o campo de usos no banco
-                await _dbUser.updateUser({
-                  'usos': usuario['usos'] + 1, // Aumenta o valor de 'usos' em 1
-                });
-                _loadUsers(); // Atualiza a lista de usuários
-                Navigator.pop(context); // Fecha a popup de edição
-              },
-              child: Text('Enviar', style: TextStyle(color: Colors.green)),
+          actions: [
+            Center(
+              child: FractionallySizedBox(
+                widthFactor: 0.9, // 90% da largura da tela
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // Botão Editar à esquerda
+                    ElevatedButton(
+                      onPressed: () {
+                        _mostrarPopupEdicao(usuario);
+                      },
+                      child: const Text('Editar', style: TextStyle(color: Colors.red)),
+                    ),
+
+                    // Botão Reenviar ao centro
+                    
+                    ElevatedButton(
+                      onPressed: () async {
+                        // Mostra mensagem se atingiu o limite
+                        if (usuario['usos'] >= usuario['max_usos']) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Limite de usos atingido!')),
+                          );
+                          Navigator.pop(context);
+                          return;
+                        }
+
+                        Navigator.pop(context); // Fecha a popup
+
+                        // Atualiza o campo de usos no banco
+                        await _dbUser.updateUser({
+                          'id': usuario['id'],
+                          'usos': usuario['usos'] + 1,
+                        });
+
+                        _loadUsers(); // Atualiza a lista de usuários
+
+                        // Recarrega o usuário atualizado
+                        final usuarioAtualizado = await _dbUser.getUserById(usuario['id']);
+
+                        // Reabre a popup com os dados atualizados
+                        if (usuarioAtualizado != null) {
+                          _mostrarPopupEnviar(usuarioAtualizado);
+                        }
+
+                      },
+                      child: const Text('+ 1'),
+                    ),
+                    
+                    
+                  ]
+                ),
               ),
             ),
-          )
-        ],
+            // Botão Enviar (Aumenta o número de usos)
+            Center(
+              child: FractionallySizedBox(
+                widthFactor: 0.9,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    
+                    shareImageToWhatsApp(cardImage!);
+                    
+                    Navigator.pop(context);
+
+                                        // Feedback visual de que o cartão foi enviado
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Cartão enviado com sucesso!')),
+                    );
+                    
+                  },
+                  child: const Text('Enviar', style: TextStyle(color: Colors.green)),
+                ),
+              ),
+            )
+          ],
+        );
+      }
+    );
+  }
+
+
+  Future<void> shareImageToWhatsApp(Uint8List imageBytes) async {
+    try {
+      // Cria um arquivo temporário
+      final tempDir = await getTemporaryDirectory();
+      final tempFile = File('${tempDir.path}/temp_image_${DateTime.now().millisecondsSinceEpoch}.png');
+      
+      // Escreve a imagem no arquivo temporário
+      await tempFile.writeAsBytes(imageBytes);
+      
+      // Compartilha o arquivo com o WhatsApp ou qualquer outro app
+      await Share.shareXFiles(
+        [XFile(tempFile.path)],
+        text: 'Compartilhando imagem',
       );
+    } catch (e) {
+      debugPrint('Erro ao compartilhar: $e');
     }
-  );
-
-
-
-}
-
+  }
 
   Future<void> _salvarEdicao(int id) async {
     try {
@@ -308,37 +432,37 @@ void _mostrarPopupEnviar(Map<String, dynamic> usuario) async {
   }
 
 
-void _deleteUser(int id) async {
-  await _dbUser.deleteUser(id); // Deleta o usuário do banco de dados
-  _loadUsers(); // Atualiza a lista de usuários na tela
-}
+  void _deleteUser(int id) async {
+    await _dbUser.deleteUser(id); // Deleta o usuário do banco de dados
+    _loadUsers(); // Atualiza a lista de usuários na tela
+  }
 
-void _confirmarExclusao(int id) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: const Text('Confirmar Exclusão'),
-        content: const Text('Tem certeza que deseja excluir este usuário? Esta ação não pode ser desfeita.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context), // Fecha o alerta
-            child: const Text('Cancelar'),
-          ),
-          TextButton(
-            onPressed: () {
-              _deleteUser(id); // Deleta o usuário
-              Navigator.pop(context); // Fecha a popup de confirmação
-              Navigator.pop(context); // Fecha a popup de edição (caso esteja aberta)
-              Navigator.pop(context);
-            },
-            child: Text('Excluir', style: TextStyle(color: Colors.red)),
-          ),
-        ],
-      );
-    },
-  );
-}
+  void _confirmarExclusao(int id) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirmar Exclusão'),
+          content: const Text('Tem certeza que deseja excluir este usuário? Esta ação não pode ser desfeita.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context), // Fecha o alerta
+              child: const Text('Cancelar'),
+            ),
+            TextButton(
+              onPressed: () {
+                _deleteUser(id); // Deleta o usuário
+                Navigator.pop(context); // Fecha a popup de confirmação
+                Navigator.pop(context); // Fecha a popup de edição (caso esteja aberta)
+                Navigator.pop(context);
+              },
+              child: Text('Excluir', style: TextStyle(color: Colors.red)),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   Widget _buildTextField(String label, TextEditingController controller, {TextInputType? keyboardType}) {
     return TextField(
@@ -348,38 +472,38 @@ void _confirmarExclusao(int id) {
     );
   }
 
-@override
-Widget build(BuildContext context) {
-  return Scaffold(
-    appBar: AppBar(title: const Text('Lista de Cadastrados')),
-    body: users.isEmpty
-        ? const Center(child: Text('Nenhum usuário cadastrado'))
-        : ListView.builder(
-            itemCount: users.length,
-            itemBuilder: (context, index) {
-              return ListTile(
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0),
-                title: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(users[index]['name']),
-                    Text(
-                      '${users[index]['usos']}/${users[index]['max_usos']}',
-                      style: const TextStyle(color: Colors.grey),
-                    ),
-                  ],
-                ),
-                trailing: const Icon(Icons.edit),
-                onTap: () => _mostrarPopupEnviar(users[index]),
-              );
-            },
-          ),
-    floatingActionButton: FloatingActionButton(
-      onPressed: _mostrarPopupNovoCliente,
-      child: const Icon(Icons.add),
-    ),
-  );
-}
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Lista de Cadastrados')),
+      body: users.isEmpty
+          ? const Center(child: Text('Nenhum usuário cadastrado'))
+          : ListView.builder(
+              itemCount: users.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0),
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(users[index]['name']),
+                      Text(
+                        '${users[index]['usos']}/${getNumberOfCircles(users[index]['layout'])}',
+                        style: const TextStyle(color: Colors.grey),
+                      ),
+                    ],
+                  ),
+                  trailing: const Icon(Icons.edit),
+                  onTap: () => _mostrarPopupEnviar(users[index]),
+                );
+              },
+            ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _mostrarPopupNovoCliente,
+        child: const Icon(Icons.add),
+      ),
+    );
+  }
 
   @override
   void dispose() {

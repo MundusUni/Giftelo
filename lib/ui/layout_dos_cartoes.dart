@@ -59,6 +59,8 @@ class LayoutDosCartoes extends StatefulWidget {
     required this.logoCircleColor,
     required this.nameLayout,
     required this.logoSize,
+    required this.circleSize,
+    required this.iconSize,
   });
 
   @override

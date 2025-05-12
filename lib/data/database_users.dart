@@ -99,4 +99,28 @@
      };
    }).toList();
  }
+
+Future<Map<String, dynamic>?> getUserById(int id) async {
+  final db = await userDatabase;
+  List<Map<String, dynamic>> result = await db.query(
+    'users',
+    where: 'id = ?',
+    whereArgs: [id],
+  );
+
+  if (result.isNotEmpty) {
+    final user = result.first;
+    return {
+      'id': user['id'],
+      'name': user['name'],
+      'celular': user['celular'],
+      'layout': user['layout'],
+      'usos': user['usos'],
+      'max_usos': user['max_usos'],
+    };
+  } else {
+    return null;
+  }
+}
+
  }

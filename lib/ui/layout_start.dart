@@ -73,6 +73,8 @@ class _LayoutStartState extends State<LayoutStart> {
                       logoCircleColor: Color(int.tryParse(defaultValues['logo_circle_color']?.toString() ?? '0xFFFFFFFF') ?? 0xFFFFFFFF),
                       nameLayout: defaultValues['name_layout']?.toString() ?? 'Novo Layout', // Adicione esta linha
                       logoSize: (defaultValues['logo_size'] == null || defaultValues['logo_size'] == 0) ? 50 : (defaultValues['logo_size'] as num).toInt(),
+                      circleSize: (defaultValues['circle_size'] == null || defaultValues['circle_size'] == 0) ? 50 : (defaultValues['circle_size'] as num).toInt(),
+                      iconSize: (defaultValues['icon_size'] == null || defaultValues['icon_size'] == 0) ? 50 : (defaultValues['icon_size'] as num).toInt(),
                     ),
                   ),
                 );
@@ -161,6 +163,8 @@ class _LayoutStartState extends State<LayoutStart> {
                                       logoCircleColor: Color(layout[index]['logo_circle_color']),
                                       nameLayout: layout[index]['name_layout'] ?? 'Novo Layout',
                                       logoSize: (layout[index]['logo_size'] == null) ? 50 : (layout[index]['logo_size'] as num).toInt(),
+                                      circleSize: (layout[index]['circle_size'] == null) ? 50 : (layout[index]['circle_size'] as num).toInt(),
+                                      iconSize: (layout[index]['icon_size'] == null) ? 50 : (layout[index]['icon_size'] as num).toInt(),
                                     ),
                                   ),
                                 );
