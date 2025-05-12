@@ -24,10 +24,8 @@ class _ListaDeCadastradosState extends State<ListaDeCadastrados> {
   final _dbLayout = DatabaseLayout();
 
   final _nameController = TextEditingController();
-  final _celularController = TextEditingController();
   final _layoutController = TextEditingController();
   final _usosController = TextEditingController(text: '0');
-  final _maxUsosController = TextEditingController(text: '0');
 
 
   @override
@@ -83,27 +81,21 @@ class _ListaDeCadastradosState extends State<ListaDeCadastrados> {
   // Criação do Map com os dados
   Map<String, dynamic> user = {
     'name': _nameController.text,
-    'celular': _celularController.text,
     'layout': _layoutController.text,
     'usos': int.parse(_usosController.text),
-    'max_usos': int.parse(_maxUsosController.text),
   };
     await _dbUser.addUser(user); // Passando o Map para o método addUser
     // Limpando os campos após adicionar o cliente
     _nameController.clear();
-    _celularController.clear();
     _layoutController.clear();
     _usosController.text = '0';
-    _maxUsosController.text = '10';
     Navigator.pop(context);
     _loadUsers(); // Atualizar a lista após adicionar
   }
 
   void _mostrarPopupNovoCliente() {
     _nameController.clear();
-    _celularController.clear();
     _usosController.text = '0';
-    _maxUsosController.text = '10';
     
 
     showDialog(
@@ -114,10 +106,8 @@ class _ListaDeCadastradosState extends State<ListaDeCadastrados> {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              _buildTextField('Name', _nameController),
-              _buildTextField('Celular', _celularController),
+              _buildTextField('Nome', _nameController),
               _buildLayoutDropdown(),
-              _buildTextField('Número Máximo de Usos', _maxUsosController, keyboardType: TextInputType.number),
             ],
           ),
           actions: [
@@ -156,10 +146,8 @@ class _ListaDeCadastradosState extends State<ListaDeCadastrados> {
 
     void _mostrarPopupEdicao(Map<String, dynamic> usuario) {
       _nameController.text = usuario['name'];
-      _celularController.text = usuario['celular'];
     _layoutController.text = usuario['layout'];
     _usosController.text = usuario['usos'].toString(); // Preenche os usos
-    _maxUsosController.text = usuario['max_usos'].toString();
 
     showDialog(
       context: context,
@@ -170,10 +158,8 @@ class _ListaDeCadastradosState extends State<ListaDeCadastrados> {
             mainAxisSize: MainAxisSize.min,
             children: [
               _buildTextField('Nome', _nameController),
-              //_buildTextField('Celular', _celularController),
               _buildLayoutDropdown(),
               _buildTextField('Usos', _usosController),
-              //_buildTextField('Número Máximo de Usos', _maxUsosController, keyboardType: TextInputType.number),
             ],
           ),
           actions: [
@@ -198,31 +184,6 @@ class _ListaDeCadastradosState extends State<ListaDeCadastrados> {
                   },
                   child: const Text('Salvar'),
                 ),
-
-                
-                // Botão Adicionar (Aumenta o número de usos)
-                /*
-                TextButton(
-                  onPressed: () async {
-                    if (int.parse(_usosController.text) >= int.parse(_maxUsosController.text)) {
-                      Navigator.pop(context); // Fecha a popup de edição
-                      return; // Impede que a popup seja fechada
-                    }
-                    // Atualiza o campo de usos no banco
-                    await _dbHelper.updateUser({
-                      'id': usuario['id'],
-                      'name': _nameController.text,
-                      'celular': _celularController.text,
-                      'layout': _layoutController.text,
-                      'usos': usuario['usos'] + 1, // Aumenta o valor de 'usos' em 1
-                      'max_usos': int.parse(_maxUsosController.text),
-                    });
-                  _loadUsers(); // Atualiza a lista de usuários
-                  Navigator.pop(context); // Fecha a popup de edição
-                  },
-                child: Text('Adicionar', style: TextStyle(color: Colors.green)),
-                ),
-                */
               ],
             )
           ],
@@ -330,7 +291,7 @@ class _ListaDeCadastradosState extends State<ListaDeCadastrados> {
                     ElevatedButton(
                       onPressed: () async {
                         // Mostra mensagem se atingiu o limite
-                        if (usuario['usos'] >= usuario['max_usos']) {
+                        if (usuario['usos'] >= getNumberOfCircles(usuario['layout'])) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(content: Text('Limite de usos atingido!')),
                           );
@@ -418,10 +379,8 @@ class _ListaDeCadastradosState extends State<ListaDeCadastrados> {
       Map<String, dynamic> user = {
         'id': id,
         'name': _nameController.text,
-        'celular': _celularController.text,
         'layout': _layoutController.text,
         'usos': int.parse(_usosController.text),
-        'max_usos': int.parse(_maxUsosController.text),
       };
       await _dbUser.updateUser(user);
       //Navigator.pop(context);
@@ -508,10 +467,8 @@ class _ListaDeCadastradosState extends State<ListaDeCadastrados> {
   @override
   void dispose() {
     _nameController.dispose();
-    _celularController.dispose();
     _layoutController.dispose();
     _usosController.dispose();
-    _maxUsosController.dispose();
     super.dispose();
   }
 }
