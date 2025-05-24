@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:test/ui/layout_dos_cartoes/labeled_text_input.dart';
 import 'package:test/ui/layout_dos_cartoes/slide.dart';
-import 'layout_dos_cartoes/number_of_stamps.dart';
-import 'layout_dos_cartoes/card.dart';
-import 'layout_dos_cartoes/slide_color.dart';
-import 'layout_dos_cartoes/stamp_background.dart';
-import 'layout_dos_cartoes/icon_references.dart';
-import 'layout_dos_cartoes/logo_uploader.dart';
+import '../ui/layout_dos_cartoes/number_of_stamps.dart';
+import '../ui/layout_dos_cartoes/card.dart';
+import '../ui/layout_dos_cartoes/slide_color.dart';
+import '../ui/layout_dos_cartoes/stamp_background.dart';
+import '../ui/layout_dos_cartoes/icon_references.dart';
+import '../ui/layout_dos_cartoes/logo_uploader.dart';
 
 import '../data/database_layout.dart';
 import 'package:sqflite/sqflite.dart'; // Para getDatabasesPath

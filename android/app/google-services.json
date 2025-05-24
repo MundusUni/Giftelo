@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "905559298087",
+    "project_id": "giftychain-giftelo-cardapp",
+    "storage_bucket": "giftychain-giftelo-cardapp.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:905559298087:android:a400d87ad6c981aa073e02",
+        "android_client_info": {
+          "package_name": "com.example.test"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfYyb8KY_ZTYRB7S0npMDKsUsbo0K7iX0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

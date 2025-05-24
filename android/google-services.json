@@ -1,26 +1,59 @@
 {
   "project_info": {
-    "project_number": "990962716722",
-    "project_id": "brindecard-22db0",
-    "storage_bucket": "brindecard-22db0.firebasestorage.app"
+    "project_number": "905559298087",
+    "project_id": "giftychain-giftelo-cardapp",
+    "storage_bucket": "giftychain-giftelo-cardapp.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:990962716722:android:b928e2a9416ead2b26ac2b",
+        "mobilesdk_app_id": "1:905559298087:android:a400d87ad6c981aa073e02",
         "android_client_info": {
           "package_name": "com.example.test"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "905559298087-39b3h6v802o56jrbbphicpp2k19cop2b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.test",
+            "certificate_hash": "f3a71555b39313ecd1ff9c3b203a41f3f532cd3b"
+          }
+        },
+        {
+          "client_id": "905559298087-uom5em8i4gmt8qdoccsg3e11tm4187ev.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.test",
+            "certificate_hash": "a8bbcdf2afc369731e6e5dcdc5324d08fa5a0884"
+          }
+        },
+        {
+          "client_id": "905559298087-rsq2d36jaq7n1p4ap7a5b4nknreml622.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyARfPX8Mn0ypXV7d7cnpUZqSeJcF6WrPZg"
+          "current_key": "AIzaSyBfYyb8KY_ZTYRB7S0npMDKsUsbo0K7iX0"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "905559298087-da9j7e4s5ju2mo6gupf5du1bo58cpgfm.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "905559298087-6970r508frmb3g260ho1gqccprfkh3j3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.test"
+              }
+            }
+          ]
         }
       }
     }

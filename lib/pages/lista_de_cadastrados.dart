@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 
 import '../data/database_users.dart';
 import '../data/database_layout.dart';
-import './lista_de_cadastrados/image_generator.dart';
-import './lista_de_cadastrados/share_image.dart';
+import '../ui/lista_de_cadastrados/image_generator.dart';
+import '../ui/lista_de_cadastrados/share_image.dart';
 
 
 class ListaDeCadastrados extends StatefulWidget {

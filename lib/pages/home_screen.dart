@@ -29,12 +29,13 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white54,
+      backgroundColor: Color(0xFFF5BB51),
             appBar: AppBar(
-              backgroundColor: const Color.fromARGB(137, 22, 12, 110),
+              backgroundColor: const Color(0xFF00284F),
               bottom: TabBar(
                 unselectedLabelColor: Colors.black,
-                labelColor: Colors.white,
+                labelColor: Color(0xFFF5BB51),
+                indicatorColor: Color(0xFFF5BB51), // Cor da linha de seleção
                 controller: _tabController,
                 tabs: const [
                   Tab(icon: Icon(Icons.menu), text: 'Lista'),
