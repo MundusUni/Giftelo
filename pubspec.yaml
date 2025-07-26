@@ -42,13 +42,19 @@ dependencies:
   
   # Opcional: para compartilhar a imagem
   share_plus: ^7.2.1
+
+  #Para poder utilizar o Firebase
   firebase_core: ^3.13.0
-  firebase_auth: ^5.5.3
 
   #Para poder logar usando Auth
   google_sign_in: ^6.3.0
   #sign_in_button: ^3.2.0
   flutter_signin_button: ^2.0.0
+  firebase_auth: ^5.5.3
+
+  #Para poder usar o Firebase Firestore
+  cloud_firestore: ^5.6.8 # versão atual na data deste guia
+
 
 dev_dependencies:
   flutter_test:

@@ -33,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             appBar: AppBar(
               backgroundColor: const Color(0xFF00284F),
               bottom: TabBar(
-                unselectedLabelColor: Colors.black,
+                unselectedLabelColor: Colors.white,
                 labelColor: Color(0xFFF5BB51),
                 indicatorColor: Color(0xFFF5BB51), // Cor da linha de seleção
                 controller: _tabController,

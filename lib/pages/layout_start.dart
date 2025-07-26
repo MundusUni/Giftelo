@@ -68,7 +68,7 @@ class _LayoutStartState extends State<LayoutStart> {
                       lowerTextColor: Color(int.tryParse(defaultValues['lower_text_color']?.toString() ?? '0xFF000000') ?? 0xFF000000),
                       upperText: defaultValues['upper_text']?.toString() ?? '',
                       lowerText: defaultValues['lower_text']?.toString() ?? '',
-                      exampleText: defaultValues['extra_phrase']?.toString() ?? '',
+                      //exampleText: defaultValues['extra_phrase']?.toString() ?? '',
                       logoCircleSize: (defaultValues['logo_circle_size'] == null || defaultValues['logo_circle_size'] == 0) ? 50 : (defaultValues['logo_circle_size'] as num).toInt(),
                       logoCircleColor: Color(int.tryParse(defaultValues['logo_circle_color']?.toString() ?? '0xFFFFFFFF') ?? 0xFFFFFFFF),
                       nameLayout: defaultValues['name_layout']?.toString() ?? 'Novo Layout', // Adicione esta linha
@@ -158,7 +158,7 @@ class _LayoutStartState extends State<LayoutStart> {
                                       lowerTextColor: Color(layout[index]['lower_text_color']),
                                       upperText: layout[index]['upper_text'] ?? '',
                                       lowerText: layout[index]['lower_text'] ?? '',
-                                      exampleText: layout[index]['extra_phrase'] ?? '',
+                                      //exampleText: layout[index]['extra_phrase'] ?? '',
                                       logoCircleSize: (layout[index]['logo_circle_size'] == null) ? 50 : (layout[index]['logo_circle_size'] as num).toInt(),
                                       logoCircleColor: Color(layout[index]['logo_circle_color']),
                                       nameLayout: layout[index]['name_layout'] ?? 'Novo Layout',

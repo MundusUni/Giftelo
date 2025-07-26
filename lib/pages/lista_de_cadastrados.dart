@@ -207,10 +207,10 @@ class _ListaDeCadastradosState extends State<ListaDeCadastrados> {
 
 
   void _mostrarPopupEnviar(Map<String, dynamic> usuario) async {
-    Uint8List? cardImage;
+  Uint8List? cardImage;
 
     try {
-      // Mostra um indicador de carregamento enquanto gera a imagem
+      // Mostra carregamento
       showDialog(
         context: context,
         barrierDismissible: false,
@@ -227,10 +227,10 @@ class _ListaDeCadastradosState extends State<ListaDeCadastrados> {
           );
         },
       );
-      
-      // Gera a imagem do cartão com as dimensões originais
+
+      // Tenta gerar a imagem
       cardImage = await generateCardImage(context, usuario['id']);
-      
+
       // Fecha o diálogo de carregamento
       Navigator.of(context).pop();
     } catch (e) {
@@ -239,6 +239,7 @@ class _ListaDeCadastradosState extends State<ListaDeCadastrados> {
       print('Erro ao gerar imagem do cartão: $e');
       cardImage = null;
     }
+
 
     // Exibe o diálogo com o cartão
     showDialog(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:test/pages/login.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'firebase/firebase_options.dart';
 
@@ -12,6 +13,10 @@ Future <void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,  // Inicializa o Firebase com as configurações da plataforma atual
   );
+
+   // Ativa persistência offline, opcional
+  FirebaseFirestore.instance.settings = const Settings(persistenceEnabled: true);
+
   runApp(const GifteloApp());
 }
 
