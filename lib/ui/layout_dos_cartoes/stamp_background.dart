@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 class StampBackgroundSelector extends StatefulWidget {
   final List<Map<String, dynamic>> iconOptions; // Lista de ícones e rótulos
-  final IconData stampBackground; // Variável para armazenar o formato atual
+  final dynamic stampBackground; // Variável para armazenar o formato atual
   final Color circleColor; // Cor do círculo
-  final ValueChanged<IconData> onShapeChanged; // Callback para passar o valor para o widget pai
+  final ValueChanged<dynamic> onShapeChanged; // Callback para passar o valor para o widget pai
   final String text; // Texto a ser exibido no widget
 
 
@@ -22,7 +22,7 @@ class StampBackgroundSelector extends StatefulWidget {
 }
 
 class _StampBackgroundSelectorState extends State<StampBackgroundSelector> {
-  late IconData currentIcon;
+  late dynamic currentIcon;
 
   @override
   void initState() {
@@ -31,12 +31,55 @@ class _StampBackgroundSelectorState extends State<StampBackgroundSelector> {
   }
 
   // Método para exibir o ícone correspondente
-  Widget _buildIcon(IconData icon) {
-    return Icon(
-      icon,
-      color: Colors.black, // Cor definida pelo widget pai
-      size: 30, // Tamanho do ícone
-    );
+  Widget _buildIcon(dynamic iconData) {
+    if (iconData is IconData) {
+      return Icon(
+        iconData,
+        color: Colors.black,
+        size: 30,
+      );
+    } else if (iconData is String) {
+      return Image.asset(
+        iconData,
+        width: 30,
+        height: 30,
+        fit: BoxFit.contain,
+        color: Colors.black, // Aplica cor se a imagem for monocromática
+        colorBlendMode: BlendMode.srcIn,
+      );
+    }
+    return Container(); // Fallback
+  }
+
+  // Método para renderizar o item no grid
+  Widget _buildGridItem(Map<String, dynamic> option) {
+    if (option['type'] == 'icon') {
+      return Icon(
+        option['icon'] as IconData,
+        size: 30,
+        color: Colors.black,
+      );
+    } else if (option['type'] == 'image') {
+      return Image.asset(
+        option['asset'] as String,
+        width: 30,
+        height: 30,
+        fit: BoxFit.contain,
+        color: Colors.black,
+        colorBlendMode: BlendMode.srcIn,
+      );
+    }
+    return Container();
+  }
+
+  // Método para obter o valor correto do item selecionado
+  dynamic _getItemValue(Map<String, dynamic> option) {
+    if (option['type'] == 'icon') {
+      return option['icon'] as IconData;
+    } else if (option['type'] == 'image') {
+      return option['asset'] as String;
+    }
+    return null;
   }
 
   @override
@@ -82,7 +125,7 @@ class _StampBackgroundSelectorState extends State<StampBackgroundSelector> {
                     child: GridView.builder(
                       shrinkWrap: true,
                       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 5, // Número de colunas (pode ajustar)
+                        crossAxisCount: 5, // número de colunas (pode ajustar)
                         crossAxisSpacing: 10,
                         mainAxisSpacing: 10,
                       ),
@@ -91,16 +134,12 @@ class _StampBackgroundSelectorState extends State<StampBackgroundSelector> {
                         final option = widget.iconOptions[index];
                         return GestureDetector(
                           onTap: () {
-                            Navigator.pop(context, option['icon'] as IconData);
+                            Navigator.pop(context, _getItemValue(option));
                           },
-                          child: Icon(
-                            option['icon'] as IconData,
-                            size: 30,
-                            color: Colors.black,
-                          ),
+                          child: _buildGridItem(option),
                         );
                       },
-                    )
+                    ),
                   ),
                   const Padding(
                     padding: EdgeInsets.only(top: 8.0),

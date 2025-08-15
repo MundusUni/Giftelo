@@ -3,6 +3,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'dart:typed_data';
+import 'package:flutter/material.dart';
 
 class DatabaseLayout {
   // Singleton: garante que apenas uma instância de DatabaseHelper será criada.
@@ -11,6 +12,28 @@ class DatabaseLayout {
   DatabaseLayout._internal();
 
   static Database? _layoutDatabase;
+
+  // Métodos helper para converter ícones/imagens para string e vice-versa
+  String iconToString(dynamic icon) {
+    if (icon is IconData) {
+      return 'icon:${icon.codePoint}';
+    } else if (icon is String) {
+      return 'asset:$icon';
+    }
+    return 'icon:57699'; // fallback para ícone padrão (círculo)
+  }
+
+  dynamic stringToIcon(String iconString) {
+    if (iconString.startsWith('icon:')) {
+      final codePoint = int.tryParse(iconString.substring(5));
+      if (codePoint != null) {
+        return IconData(codePoint, fontFamily: 'MaterialIcons');
+      }
+    } else if (iconString.startsWith('asset:')) {
+      return iconString.substring(6);
+    }
+    return IconData(0xe163, fontFamily: 'MaterialIcons'); // fallback
+  }
 
   // Getter para o banco de dados dos layouts.
   Future<Database> get layoutDatabase async {
@@ -89,7 +112,7 @@ Future<void> resetLayoutDatabase() async {
     final layoutDatabasePath = join(path, 'layouts.db');
     return await openDatabase(
       layoutDatabasePath,
-      version: 1,
+      version: 2, // Incrementei a versão para atualizar a estrutura
       onCreate: (db, version) async {
         // Cria a tabela 'layout_table' no banco de dados dos layouts.
         await db.execute('''
@@ -105,14 +128,34 @@ Future<void> resetLayoutDatabase() async {
             logo_circle_color INTEGER DEFAULT 4294967295,
             circle_color INTEGER DEFAULT 4294967295,
             stamp_color INTEGER DEFAULT 4294967040,
-            stamp_icon INTEGER DEFAULT 58272, 
-            stamp_background INTEGER DEFAULT 57699,
+            stamp_icon TEXT DEFAULT 'icon:58272',
+            stamp_background TEXT DEFAULT 'icon:57699',
             number_of_circles INTEGER DEFAULT 1,
             logo_size INTEGER DEFAULT 0,
             circle_size INTEGER DEFAULT 35,
             icon_size INTEGER DEFAULT 35
           )
         ''');
+      },
+      onUpgrade: (db, oldVersion, newVersion) async {
+        if (oldVersion < 2) {
+          // Migra dados existentes de INTEGER para TEXT
+          await db.execute('ALTER TABLE layout_table ADD COLUMN stamp_icon_temp TEXT');
+          await db.execute('ALTER TABLE layout_table ADD COLUMN stamp_background_temp TEXT');
+          
+          // Converte dados existentes
+          await db.execute('''
+            UPDATE layout_table 
+            SET stamp_icon_temp = 'icon:' || CAST(stamp_icon AS TEXT),
+                stamp_background_temp = 'icon:' || CAST(stamp_background AS TEXT)
+          ''');
+          
+          // Remove colunas antigas e renomeia as novas
+          await db.execute('ALTER TABLE layout_table DROP COLUMN stamp_icon');
+          await db.execute('ALTER TABLE layout_table DROP COLUMN stamp_background');
+          await db.execute('ALTER TABLE layout_table RENAME COLUMN stamp_icon_temp TO stamp_icon');
+          await db.execute('ALTER TABLE layout_table RENAME COLUMN stamp_background_temp TO stamp_background');
+        }
       },
     );
   }
@@ -154,6 +197,29 @@ Future<void> resetLayoutDatabase() async {
 
 
 
+  // Extrai o codePoint de uma string de ícone
+  int getIconCodePoint(String iconString) {
+    if (iconString.startsWith('icon:')) {
+      final codePoint = int.tryParse(iconString.substring(5));
+      if (codePoint != null) {
+        return codePoint;
+      }
+    }
+    return 57699; // fallback para ícone padrão (círculo)
+  }
+
+  // Converte string para IconData (para uso na UI)
+  IconData getIconData(String iconString) {
+    if (iconString.startsWith('icon:')) {
+      final codePoint = int.tryParse(iconString.substring(5));
+      if (codePoint != null) {
+        return IconData(codePoint, fontFamily: 'MaterialIcons');
+      }
+    }
+    return IconData(57699, fontFamily: 'MaterialIcons'); // fallback
+  }
+
+
 
 
 
@@ -171,28 +237,23 @@ Future<void> resetLayoutDatabase() async {
     }
   }
 
-  Future<Map<String, dynamic>?> getLayoutByName(String nameLayout) async {
-    print('Buscando layout com nome: $nameLayout');
-    
-    try {
-      final db = await layoutDatabase;
+  Future<Map<String, dynamic>?> getLayoutByName(String name) async {
+    final db = await layoutDatabase;
+    final List<Map<String, dynamic>> maps = await db.query(
+      'layouts',
+      where: 'name_layout = ?',
+      whereArgs: [name],
+    );
 
-      final List<Map<String, dynamic>> result = await db.query(
-        'layout_table',
-        where: 'name_layout = ?',
-        whereArgs: [nameLayout],
-      );
+    if (maps.isNotEmpty) {
+      final layoutMap = maps.first;
 
-      print('Resultado: $result');
-
-      if (result.isNotEmpty) {
-        return result.first;
-      } else {
-        print('Layout "$nameLayout" não encontrado.');
-        return null;
-      }
-    } catch (e) {
-      print('Erro ao buscar layout "$nameLayout": $e');
+      return {
+        ...layoutMap,
+        'stamp_icon': stringToIcon(layoutMap['stamp_icon']),
+        'stamp_background': stringToIcon(layoutMap['stamp_background']),
+      };
+    } else {
       return null;
     }
   }
@@ -211,8 +272,8 @@ Future<void> resetLayoutDatabase() async {
     required int logoCircleColor,
     required int circleColor,
     required int stampColor,
-    required int stampIcon,
-    required int stampBackground,
+    required dynamic stampIcon,
+    required dynamic stampBackground,
     required int numberOfCircles,
     required int logoSize,
     required int circleSize,
@@ -232,8 +293,8 @@ Future<void> resetLayoutDatabase() async {
           'logo_circle_color': logoCircleColor,
           'circle_color': circleColor,
           'stamp_color': stampColor,
-          'stamp_icon': stampIcon,
-          'stamp_background': stampBackground,
+          'stamp_icon': iconToString(stampIcon), // Converte para string
+          'stamp_background': iconToString(stampBackground), // Converte para string
           'number_of_circles': numberOfCircles,
           'logo_size': logoSize,
           'circle_size': circleSize,
@@ -259,8 +320,8 @@ Future<void> resetLayoutDatabase() async {
     required int logoCircleColor,
     required int circleColor,
     required int stampColor,
-    required int stampIcon,
-    required int stampBackground,
+    required dynamic stampIcon,
+    required dynamic stampBackground,
     required int numberOfCircles,
     required int logoSize,
     required int circleSize,
@@ -281,8 +342,8 @@ Future<void> resetLayoutDatabase() async {
           'logo_circle_color': logoCircleColor,
           'circle_color': circleColor,
           'stamp_color': stampColor,
-          'stamp_icon': stampIcon,
-          'stamp_background': stampBackground,
+          'stamp_icon': iconToString(stampIcon),
+          'stamp_background': iconToString(stampBackground),
           'number_of_circles': numberOfCircles,
           'logo_size': logoSize,
           'circle_size': circleSize,
@@ -355,8 +416,8 @@ Future<void> resetLayoutDatabase() async {
           'logo_circle_color': layout['logo_circle_color'], // cor do círculo atrás da logo
           'circle_color': layout['circle_color'], // cor dos círculos atrás dos stamps
           'stamp_color': layout['stamp_color'], // cor dos stamps
-          'stamp_icon': layout['stamp_icon'], // ícone utilizado como stamp
-          'stamp_background': layout['stamp_background'], // fundo do stamp
+          'stamp_icon': stringToIcon(layout['stamp_icon']), // ícone utilizado como stamp
+          'stamp_background': stringToIcon(layout['stamp_background']), // fundo do stamp
           'number_of_circles': layout['number_of_circles'], // número de círculos atrás dos stamps
           'logo_size': layout['logo_size'], // tamanho da logo do cliente
           'circle_size': layout['circle_size'], // tamanho dos círculos atrás dos stamps
@@ -370,20 +431,20 @@ Future<void> resetLayoutDatabase() async {
   }
 
     // Retorna todos os nomes presentes na coluna 'name_layout'
-  Future<List<String>> getAllNames() async {
-    try {
-      final db = await layoutDatabase;
-      final result = await db.query(
-        'layout_table',
-        columns: ['name_layout'],
-      );
+    Future<List<String>> getAllNames() async {
+      try {
+        final db = await layoutDatabase;
+        final result = await db.query(
+          'layout_table',
+          columns: ['name_layout'],
+        );
 
-      // Transforma os resultados em uma lista de strings
-      return result.map((row) => row['name_layout'] as String).toList();
-    } catch (e) {
-      print('Erro ao buscar nomes dos layouts: $e');
-      return [];
+        // Transforma os resultados em uma lista de strings
+        return result.map((row) => row['name_layout'] as String).toList();
+      } catch (e) {
+        print('Erro ao buscar nomes dos layouts: $e');
+        return [];
+      }
     }
-  }
 
 }

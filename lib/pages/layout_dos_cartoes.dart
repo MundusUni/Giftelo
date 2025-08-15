@@ -22,8 +22,8 @@ class LayoutDosCartoes extends StatefulWidget {
   bool phraseAppears = false;
   Color stampColor = Colors.black;
   Color cardColor = Colors.blue;
-  IconData stampIcon =  IconData(0xe3a0, fontFamily: 'MaterialIcons');
-  IconData stampBackground = IconData(0xe163, fontFamily: 'MaterialIcons');
+  dynamic stampIcon = IconData(0xe3a0, fontFamily: 'MaterialIcons');
+  dynamic stampBackground = IconData(0xe163, fontFamily: 'MaterialIcons');
   Color circleColor = Colors.white;
   Color iconColor = Colors.yellow;
   Color upperTextColor = Colors.black;

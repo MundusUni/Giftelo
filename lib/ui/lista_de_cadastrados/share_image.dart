@@ -16,7 +16,7 @@ Future<void> shareImageToWhatsApp(Uint8List imageBytes) async {
       // Compartilha o arquivo com o WhatsApp ou qualquer outro app
       await Share.shareXFiles(
         [XFile(tempFile.path)],
-        text: 'Compartilhando imagem',
+        text: 'Este é o seu cartão de fidelidade digital. A cada visita, ele te aproxima de um presente nosso. É a nossa forma de agradecer pela preferência e parceria!',
       );
     } catch (e) {
       debugPrint('Erro ao compartilhar: $e');

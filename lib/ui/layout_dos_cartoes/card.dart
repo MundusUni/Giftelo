@@ -6,8 +6,8 @@ class CustomCard extends StatefulWidget {
   //final ValueChanged<String>? onNameChanged; // Callback opcional para capturar o valor digitado
   final Color cardColor;
   final Color stampColor;
-  final IconData stampIcon;
-  final IconData stampBackground;
+  final dynamic stampIcon;
+  final dynamic stampBackground;
   final int stampCount; // Número de ícones
   final int numberOfCircles; // Número de círculos a serem exibidos
   final Color circleColor;
@@ -54,6 +54,27 @@ class CustomCard extends StatefulWidget {
 class _CustomCardState extends State<CustomCard> {
   double width = 400;
   double height = 180;
+
+  // Método helper para renderizar ícone ou imagem
+  Widget _buildIconOrImage(dynamic iconData, Color color, double size) {
+    if (iconData is IconData) {
+      return Icon(
+        iconData,
+        color: color,
+        size: size,
+      );
+    } else if (iconData is String) {
+      return Image.asset(
+        iconData,
+        width: size,
+        height: size,
+        fit: BoxFit.contain,
+        color: color,
+        colorBlendMode: BlendMode.srcIn,
+      );
+    }
+    return Container(); // Fallback
+  }
 
   @override 
   Widget build(BuildContext context) {
@@ -146,10 +167,10 @@ class _CustomCardState extends State<CustomCard> {
                                   top: cellHeight / 2 - widget.circleSize / 2,
                                   width: widget.circleSize.toDouble(),
                                   height: widget.circleSize.toDouble(),
-                                  child: Icon(
+                                  child: _buildIconOrImage(
                                     widget.stampBackground,
-                                    size: widget.circleSize.toDouble(),
-                                    color: widget.circleColor,
+                                    widget.circleColor,
+                                    widget.circleSize.toDouble(),
                                   ),
                                 ),
                                 
@@ -160,10 +181,10 @@ class _CustomCardState extends State<CustomCard> {
                                     top: cellHeight / 2 - widget.iconSize / 2,
                                     width: widget.iconSize.toDouble(),
                                     height: widget.iconSize.toDouble(),
-                                    child: Icon(
+                                    child: _buildIconOrImage(
                                       widget.stampIcon,
-                                      size: widget.iconSize.toDouble(),
-                                      color: widget.stampColor,
+                                      widget.stampColor,
+                                      widget.iconSize.toDouble(),
                                     ),
                                   ),
                               ],
